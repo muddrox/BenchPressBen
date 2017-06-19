@@ -1,0 +1,61 @@
+
+spr_player.png
+format: RGBA8888
+filter: Nearest,Nearest
+repeat: none
+spr_player
+  rotate: false
+  xy: 1, 1
+  size: 96, 144
+  orig: 96, 144
+  offset: 0, 0
+  index: 0
+spr_player
+  rotate: false
+  xy: 1, 1
+  size: 96, 144
+  orig: 96, 144
+  offset: 0, 0
+  index: 4
+spr_player
+  rotate: false
+  xy: 99, 1
+  size: 96, 144
+  orig: 96, 144
+  offset: 0, 0
+  index: 1
+spr_player
+  rotate: false
+  xy: 99, 1
+  size: 96, 144
+  orig: 96, 144
+  offset: 0, 0
+  index: 3
+spr_player
+  rotate: false
+  xy: 197, 1
+  size: 96, 144
+  orig: 96, 144
+  offset: 0, 0
+  index: 2
+spr_player
+  rotate: false
+  xy: 295, 1
+  size: 96, 144
+  orig: 96, 144
+  offset: 0, 0
+  index: 5
+spr_player
+  rotate: false
+  xy: 295, 1
+  size: 96, 144
+  orig: 96, 144
+  offset: 0, 0
+  index: 7
+spr_player
+  rotate: false
+  xy: 393, 1
+  size: 96, 144
+  orig: 96, 144
+  offset: 0, 0
+  index: 6
