@@ -9,6 +9,8 @@ import com.benchpressben.game.GameMain;
 
 import player.Player;
 
+import static helpers.GameInfo.WIDTH;
+
 public class GameWorld implements Screen {
 
     private GameMain game;
@@ -22,7 +24,7 @@ public class GameWorld implements Screen {
     public GameWorld(GameMain game) {
         this.game = game;
 
-        player = new Player("spr_player.atlas", Gdx.graphics.getWidth() / 2, 320);
+        player = new Player("spr_player.atlas", WIDTH/2, 160);
         ground = new Texture("bg_ground.png");
     }
 

@@ -21,7 +21,8 @@ public class Player extends Sprite implements InputProcessor {
         playerAtlas = new TextureAtlas(Gdx.files.internal(name));
         animation = new Animation(1/15f, playerAtlas.getRegions());
 
-        setPosition( x - getWidth() / 2f, y - getHeight() / 2f );
+        setPosition( x , y );
+        //setPosition( x - getWidth() / 2f, y - getHeight() / 2f );
 
         moveSpeed = 5;
         direction = 0;
