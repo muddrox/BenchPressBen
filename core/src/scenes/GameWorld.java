@@ -33,7 +33,7 @@ public class GameWorld implements Screen {
     public void show() {
 
     }
-
+    // Get a life, Brock
     @Override
     public void render(float delta) {
         Gdx.gl.glClearColor(1, .75f, 1, 1);
