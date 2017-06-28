@@ -39,7 +39,7 @@ public class GameWorld implements Screen {
         Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
 
         //update player movement
-        player.setPosition( player.getX() + player.getHsp(), player.getY() );
+        player.updateMotion();
 
         game.getBatch().begin();
 

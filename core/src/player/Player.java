@@ -7,7 +7,7 @@ import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.graphics.g2d.TextureAtlas;
 
 
-public class Player extends Sprite implements InputProcessor {
+public class Player extends Sprite  {
 
     private Animation animation;
     private TextureAtlas playerAtlas;
@@ -16,19 +16,20 @@ public class Player extends Sprite implements InputProcessor {
     private float direction;
     private float hsp;
 
+    private float x;
+    private float y;
+
     public Player(String name, float x, float y) {
 
         playerAtlas = new TextureAtlas(Gdx.files.internal(name));
         animation = new Animation(1/15f, playerAtlas.getRegions());
 
-        setPosition( x , y );
-        //setPosition( x - getWidth() / 2f, y - getHeight() / 2f );
+        this.x = x;
+        this.y = y;
 
         moveSpeed = 5;
         direction = 0;
         hsp = 0;
-
-        Gdx.input.setInputProcessor(this);
     }
 
     public Animation getAnimation() {
@@ -39,67 +40,40 @@ public class Player extends Sprite implements InputProcessor {
         return hsp;
     }
 
-    @Override
-    public boolean touchDown(int screenX, int screenY, int pointer, int button) {
-        int left, right, dir;
+    public void updateMotion(){
+        move();
 
-        if ( screenX > Gdx.graphics.getWidth() / 2 ){
-            right = 1;
-        } else {
-            right = 0;
+        setX(x);
+        setY(y);
+
+        x += hsp;
+    }
+
+    public void move(){
+        int left, right, dir, touchX, touchY;
+
+        left = 0;
+        right = 0;
+
+        int isTouched = Gdx.input.isTouched()? 1 : 0;
+
+        touchX = Gdx.input.getX();
+        touchY = Gdx.input.getY();
+
+        if ( x > 0 ) {
+            if (touchX < 360) {
+                left = -1;
+            }
         }
 
-        if ( screenX < Gdx.graphics.getWidth() / 2 ){
-            left = -1;
-        } else {
-            left = 0;
+        if ( x < 624 ) {
+            if (touchX > 360 && touchX < 720) {
+                right = 1;
+            }
         }
 
         dir = left + right;
 
-        hsp = moveSpeed * dir;
-
-        return true;
-    }
-
-    @Override
-    public boolean touchUp(int screenX, int screenY, int pointer, int button) {
-        hsp = 0;
-        return true;
-    }
-
-    /******************************************************
-     * Don't worry about the methods below.  Don't delete them either.
-     * ****************************************************/
-
-    @Override
-    public boolean touchDragged(int screenX, int screenY, int pointer) {
-        return false;
-    }
-
-    @Override
-    public boolean keyUp(int keycode) {
-        return false;
-    }
-
-    @Override
-    public boolean keyDown(int keycode) {
-        return false;
-    }
-
-    @Override
-    public boolean keyTyped(char character) {
-        return false;
-    }
-
-
-    @Override
-    public boolean mouseMoved(int screenX, int screenY) {
-        return false;
-    }
-
-    @Override
-    public boolean scrolled(int amount) {
-        return false;
+        hsp = ( moveSpeed * dir ) * isTouched;
     }
 }
