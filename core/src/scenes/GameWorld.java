@@ -5,6 +5,7 @@ import com.badlogic.gdx.Screen;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
+import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import com.benchpressben.game.GameMain;
 
 import player.Player;
@@ -14,13 +15,17 @@ import static helpers.GameInfo.WIDTH;
 public class GameWorld implements Screen {
 
     private GameMain game;
-    //hey
 
     private float timePassed = 0;
 
     private Player player;
 
     private Texture ground;
+
+    //new
+    private static ShapeRenderer worldBorder;
+
+
 
     public GameWorld(GameMain game) {
         this.game = game;
@@ -33,11 +38,19 @@ public class GameWorld implements Screen {
     public void show() {
 
     }
-    // Get a life, Brock
+
     @Override
     public void render(float delta) {
         Gdx.gl.glClearColor(1, .75f, 1, 1);
         Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
+
+        worldBorder = new ShapeRenderer();
+        worldBorder.begin(ShapeRenderer.ShapeType.Filled);
+        worldBorder.setColor(0, 0, 0, 0);
+        worldBorder.rect(0, 200, 100, 1600); //left border
+        worldBorder.rect(0, 1700, 1000, 100); //top border
+        worldBorder.rect(1000, 200, 100, 1600); //right border
+        worldBorder.end();
 
         //update player movement
         player.updateMotion();
