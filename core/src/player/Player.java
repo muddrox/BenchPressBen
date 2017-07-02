@@ -2,9 +2,12 @@ package player;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.InputProcessor;
+import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.Animation;
 import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.graphics.g2d.TextureAtlas;
+import com.badlogic.gdx.graphics.g2d.TextureRegion;
+import com.badlogic.gdx.math.Rectangle;
 
 
 public class Player extends Sprite  {
@@ -19,13 +22,20 @@ public class Player extends Sprite  {
     private float x;
     private float y;
 
+    private Rectangle collisionMask;
+
     public Player(String name, float x, float y) {
+        super ( new Texture(Gdx.files.internal("spr_player.png")) , 0, 0, 96, 144 );
+
+        //setOriginCenter();
 
         playerAtlas = new TextureAtlas(Gdx.files.internal(name));
         animation = new Animation(1/15f, playerAtlas.getRegions());
 
-        this.x = x;
+        this.x = x - getWidth()/2;
         this.y = y;
+
+        collisionMask = new Rectangle();
 
         moveSpeed = 5;
         direction = 0;
@@ -47,9 +57,11 @@ public class Player extends Sprite  {
         setY(y);
 
         x += hsp;
+
+        collisionMask.set(x,y,getWidth(),getHeight());
     }
 
-    public void move(){
+    private void move(){
         int left, right, dir, touchX, touchY;
 
         left = 0;
@@ -77,5 +89,9 @@ public class Player extends Sprite  {
         dir = left + right;
 
         hsp = ( moveSpeed * dir ) * isTouched;
+    }
+
+    public Rectangle getMask() {
+        return collisionMask;
     }
 }

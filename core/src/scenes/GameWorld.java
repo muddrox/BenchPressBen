@@ -5,10 +5,13 @@ import com.badlogic.gdx.Screen;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
+import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import com.benchpressben.game.GameMain;
 
 import player.Player;
+import player.Weight;
 
+import static helpers.GameInfo.HEIGHT;
 import static helpers.GameInfo.WIDTH;
 
 public class GameWorld implements Screen {
@@ -22,11 +25,16 @@ public class GameWorld implements Screen {
 
     private Texture ground;
 
+    private Weight weight;
+
+    private ShapeRenderer test;
+
     public GameWorld(GameMain game) {
         this.game = game;
 
-        player = new Player("spr_player.atlas", WIDTH/2, 160);
+        player = new Player("spr_player.atlas", 360, 160);
         ground = new Texture("bg_ground.png");
+        weight = new Weight("spr_weight.png", this,360,640);
     }
 
     @Override
@@ -41,6 +49,11 @@ public class GameWorld implements Screen {
 
         //update player movement
         player.updateMotion();
+        weight.updateMotion();
+
+        if ( weight.contact(player) && weight.isHeld() == false && weight.getVsp() < 0 ){
+            weight.setHeld(true);
+        }
 
         game.getBatch().begin();
 
@@ -50,7 +63,13 @@ public class GameWorld implements Screen {
 
         game.getBatch().draw((TextureRegion) player.getAnimation().getKeyFrame(timePassed,true), player.getX(), player.getY());
 
+        game.getBatch().draw(weight, weight.getX(), weight.getY() );
+
         game.getBatch().end();
+    }
+
+    public Player getPlayer() {
+        return player;
     }
 
     @Override

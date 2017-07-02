@@ -5,6 +5,6 @@ package helpers;
  */
 
 public class GameInfo {
-    public static int WIDTH = 720;
-    public static int HEIGHT = 1280;
+    public static float WIDTH = 720;
+    public static float HEIGHT = 1280;
 }
