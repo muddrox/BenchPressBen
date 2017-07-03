@@ -75,13 +75,13 @@ public class Player extends Sprite  {
         // ensures user is touching button
         // might want to change this later to an actual button
         // potential problems with running on other devices
-        if ( x > 0 ) {
+        if ( x > 40 ) {
             if (touchX < 360 && touchY > Gdx.graphics.getHeight() - 240) {
                 left = -1;
             }
         }
 
-        if ( x < 624 ) {
+        if ( x < 720 - getWidth() - 40 ) {
             if (touchX > 360 && touchX < 720 && touchY > Gdx.graphics.getHeight() - 240) {
                 right = 1;
             }

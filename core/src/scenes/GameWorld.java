@@ -3,11 +3,13 @@ package scenes;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Screen;
 import com.badlogic.gdx.graphics.GL20;
+import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import com.benchpressben.game.GameMain;
 
+import gui.GUI;
 import player.Player;
 import player.Weight;
 
@@ -22,18 +24,20 @@ public class GameWorld implements Screen {
 
     private Player player;
 
-    private Texture ground;
+    private Texture buttons;
 
     private Weight weight;
 
-    private static ShapeRenderer worldBorder;
+    private GUI gui;
 
     public GameWorld(GameMain game) {
         this.game = game;
 
         player = new Player("spr_player.atlas", 360, 160);
-        ground = new Texture("bg_ground.png");
+        buttons = new Texture("bg_buttons.png");
         weight = new Weight("spr_weight.png", this,360,640);
+
+        gui = new GUI(this);
     }
 
     @Override
@@ -46,14 +50,6 @@ public class GameWorld implements Screen {
         Gdx.gl.glClearColor(1, .75f, 1, 1);
         Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
 
-        worldBorder = new ShapeRenderer();
-        worldBorder.begin(ShapeRenderer.ShapeType.Filled);
-        worldBorder.setColor(0, 0, 0, 0);
-        worldBorder.rect(0, 200, 100, 1600); //left border
-        worldBorder.rect(0, 1700, 1000, 100); //top border
-        worldBorder.rect(1000, 200, 100, 1600); //right border
-        worldBorder.end();
-
         //update player movement
         player.updateMotion();
         weight.updateMotion();
@@ -62,9 +58,11 @@ public class GameWorld implements Screen {
             weight.setHeld(true);
         }
 
+        gui.drawGui();
+
         game.getBatch().begin();
 
-        game.getBatch().draw(ground, 0, 0);
+        game.getBatch().draw(buttons, 0, 0);
 
         timePassed += Gdx.graphics.getDeltaTime();
 
@@ -78,6 +76,8 @@ public class GameWorld implements Screen {
     public Player getPlayer() {
         return player;
     }
+
+    public OrthographicCamera getCam() { return game.getCam(); }
 
     @Override
     public void resize(int width, int height) {
