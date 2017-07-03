@@ -21,7 +21,7 @@ public class Player extends Sprite  {
     private TextureRegion currentFrame;
 
     private float moveSpeed;
-    private float direction;
+    private int direction;
     private float hsp;
 
     private float x;
@@ -65,7 +65,7 @@ public class Player extends Sprite  {
     }
 
     private void move(){
-        int left, right, dir, touchX, touchY;
+        int left, right, touchX, touchY;
 
         left = 0;
         right = 0;
@@ -87,9 +87,9 @@ public class Player extends Sprite  {
             }
         }
 
-        dir = left + right;
+        direction = left + right;
 
-        hsp = ( moveSpeed * dir ) * isTouched;
+        hsp = ( moveSpeed * direction ) * isTouched;
     }
 
     public TextureRegion getCurrentFrame() { return currentFrame; }
