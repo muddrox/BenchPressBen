@@ -68,8 +68,13 @@ public class Weight extends Sprite  {
         touchY = Gdx.input.getY();
 
         if ( isTouched == 1 ) {
-            if ( touchX > 720 && touchX < 1080 && touchY > Gdx.graphics.getHeight() - 240 && isHeld == true ) {
-                vsp = 24;
+            if ( touchX > 720 && touchX < 1080 && touchY > Gdx.graphics.getHeight() - 240 && isHeld ) {
+                while (isTouched == 1){
+                    //draw squating ben
+                    gameWorld.getPlayer().updateMotion(); // that's not working like I would like it to
+                    isTouched = Gdx.input.isTouched()? 1 : 0;
+                }
+                setVsp(24);
                 isHeld = false;
             }
         }
@@ -96,8 +101,8 @@ public class Weight extends Sprite  {
         setX(x);
         setY(y);
 
-        x += hsp;
-        y += vsp;
+        x += getHsp();
+        y += getVsp();
 
         collisionMask.set(x, y + 24, getWidth(), 16);
     }
@@ -108,7 +113,7 @@ public class Weight extends Sprite  {
                 vsp -= gravity;
             }
         } else {
-            vsp = 0;
+            setVsp(0);
         }
     }
 
