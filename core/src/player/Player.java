@@ -9,11 +9,16 @@ import com.badlogic.gdx.graphics.g2d.TextureAtlas;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.math.Rectangle;
 
+import scenes.GameWorld;
+
 
 public class Player extends Sprite  {
 
+    private GameWorld gameWorld;
+
     private Animation animation;
     private TextureAtlas playerAtlas;
+    private TextureRegion currentFrame;
 
     private float moveSpeed;
     private float direction;
@@ -24,10 +29,10 @@ public class Player extends Sprite  {
 
     private Rectangle collisionMask;
 
-    public Player(String name, float x, float y) {
+    public Player(String name, GameWorld gameWorld, float x, float y) {
         super ( new Texture(Gdx.files.internal("spr_player.png")) , 0, 0, 96, 144 );
 
-        //setOriginCenter();
+        this.gameWorld = gameWorld;
 
         playerAtlas = new TextureAtlas(Gdx.files.internal(name));
         animation = new Animation(1/15f, playerAtlas.getRegions());
@@ -42,14 +47,6 @@ public class Player extends Sprite  {
         hsp = 0;
     }
 
-    public Animation getAnimation() {
-        return this.animation;
-    }
-
-    public float getHsp() {
-        return hsp;
-    }
-
     public void updateMotion(){
         move();
 
@@ -59,6 +56,12 @@ public class Player extends Sprite  {
         x += hsp;
 
         collisionMask.set(x,y,getWidth(),getHeight());
+
+        if ( hsp != 0 ) {
+            currentFrame = (TextureRegion) animation.getKeyFrame(gameWorld.getTimePassed(), true);
+        } else {
+            currentFrame = (TextureRegion) animation.getKeyFrame(0, true);
+        }
     }
 
     private void move(){
@@ -91,6 +94,8 @@ public class Player extends Sprite  {
 
         hsp = ( moveSpeed * dir ) * isTouched;
     }
+
+    public TextureRegion getCurrentFrame() { return currentFrame; }
 
     public Rectangle getMask() {
         return collisionMask;

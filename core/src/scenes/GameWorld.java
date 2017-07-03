@@ -33,9 +33,9 @@ public class GameWorld implements Screen {
     public GameWorld(GameMain game) {
         this.game = game;
 
-        player = new Player("spr_player.atlas", 360, 160);
+        player  = new Player("spr_player.atlas", this, 360, 160);
+        weight  = new Weight("spr_weight.png", this, 360, 640);
         buttons = new Texture("bg_buttons.png");
-        weight = new Weight("spr_weight.png", this,360,640);
 
         gui = new GUI(this);
     }
@@ -66,11 +66,15 @@ public class GameWorld implements Screen {
 
         timePassed += Gdx.graphics.getDeltaTime();
 
-        game.getBatch().draw((TextureRegion) player.getAnimation().getKeyFrame(timePassed,true), player.getX(), player.getY());
+        game.getBatch().draw(player.getCurrentFrame(), player.getX(), player.getY());
 
         game.getBatch().draw(weight, weight.getX(), weight.getY() );
 
         game.getBatch().end();
+    }
+
+    public float getTimePassed() {
+        return timePassed;
     }
 
     public Player getPlayer() {
