@@ -11,6 +11,8 @@ import com.badlogic.gdx.math.Rectangle;
 
 import scenes.GameWorld;
 
+import static helpers.GameInfo.WIDTH;
+
 
 public class Weight extends Sprite  {
 
@@ -28,6 +30,8 @@ public class Weight extends Sprite  {
     private float x;
     private float y;
 
+    private float xOffset;
+
     private Rectangle collisionMask;
 
     public Weight(String name, GameWorld gameWorld, float x, float y) {
@@ -39,6 +43,8 @@ public class Weight extends Sprite  {
 
         this.x = x;
         this.y = y;
+
+        xOffset = 0;
 
         collisionMask = new Rectangle();
 
@@ -62,7 +68,7 @@ public class Weight extends Sprite  {
         touchY = Gdx.input.getY();
 
         if ( isTouched == 1 ) {
-            if (touchX > 720 && touchX < 1080 && touchY > Gdx.graphics.getHeight() - 240 && isHeld == true) {
+            if ( touchX > 720 && touchX < 1080 && touchY > Gdx.graphics.getHeight() - 240 && isHeld == true ) {
                 vsp = 24;
                 isHeld = false;
             }
@@ -71,7 +77,19 @@ public class Weight extends Sprite  {
         if ( !isHeld ) {
             move();
         } else {
-            x =  ( gameWorld.getPlayer().getX() + gameWorld.getPlayer().getWidth()/2 ) - getWidth()/2;
+            if ( xOffset != 0 ){
+                if ( Math.abs(xOffset) > 5 ){
+                    xOffset += 10 * -Math.signum(xOffset);
+                } else {
+                    xOffset += 1  * -Math.signum(xOffset);
+                }
+            }
+
+            if ( gameWorld.getPlayer().getX() - 32 + xOffset > 40
+                    && gameWorld.getPlayer().getX() + getWidth() - 32 + xOffset < WIDTH - 40) {
+                x = ((gameWorld.getPlayer().getX() + gameWorld.getPlayer().getWidth() / 2) - getWidth() / 2) + xOffset;
+            }
+
             y = gameWorld.getPlayer().getY() + 120;
         }
 
@@ -116,5 +134,9 @@ public class Weight extends Sprite  {
 
     public void setVsp(float vsp) {
         this.vsp = vsp;
+    }
+
+    public void setxOffset(float xOffset) {
+        this.xOffset = xOffset;
     }
 }
