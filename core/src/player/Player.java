@@ -11,7 +11,6 @@ import com.badlogic.gdx.math.Rectangle;
 
 import scenes.GameWorld;
 
-
 public class Player extends Sprite  {
 
     private GameWorld gameWorld;
@@ -74,7 +73,7 @@ public class Player extends Sprite  {
 
         touchX = Gdx.input.getX();
         touchY = Gdx.input.getY();
-        
+
         if ( x > 40 ) {
             if (touchX < 360 && touchY > Gdx.graphics.getHeight() - 240) {
                 left = -1;
