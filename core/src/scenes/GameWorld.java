@@ -10,6 +10,7 @@ import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import com.benchpressben.game.GameMain;
 
 import gui.GUI;
+import gui.Score;
 import player.Player;
 import player.Weight;
 
@@ -25,6 +26,7 @@ public class GameWorld implements Screen {
     private Weight weight;
     private GUI gui;
     private Boolean atGym;
+    private Score score;
 
     public GameWorld(GameMain game) {
         this.game = game;
@@ -35,6 +37,8 @@ public class GameWorld implements Screen {
         atGym   = true;
 
         gui = new GUI(this);
+
+        score = new Score(this);
     }
 
     @Override
@@ -77,6 +81,8 @@ public class GameWorld implements Screen {
         game.getBatch().draw(player.getCurrentFrame(), player.getX(), player.getY());
 
         game.getBatch().draw(weight, weight.getX(), weight.getY() );
+
+        score.getBitmapFont().draw(game.getBatch(), score.getScoreString(), 100, 1240);
 
         game.getBatch().end();
     }
