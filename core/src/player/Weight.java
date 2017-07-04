@@ -69,11 +69,12 @@ public class Weight extends Sprite  {
 
         if ( isTouched == 1 ) {
             if ( touchX > 720 && touchX < 1080 && touchY > Gdx.graphics.getHeight() - 240 && isHeld ) {
-                while (isTouched == 1){
-                    //draw squating ben
-                    gameWorld.getPlayer().updateMotion(); // that's not working like I would like it to
-                    isTouched = Gdx.input.isTouched()? 1 : 0;
-                }
+                gameWorld.getPlayer().setyScale(120f/144f);
+            }
+        } else {
+            if ( gameWorld.getPlayer().getyScale() != 1 ){
+                gameWorld.getPlayer().setyScale(1f);
+
                 setVsp(24);
                 isHeld = false;
             }
@@ -95,7 +96,9 @@ public class Weight extends Sprite  {
                 x = ((gameWorld.getPlayer().getX() + gameWorld.getPlayer().getWidth() / 2) - getWidth() / 2) + xOffset;
             }
 
-            y = gameWorld.getPlayer().getY() + 120;
+            int isSquatting = gameWorld.getPlayer().getyScale() != 1? 1 : 0;
+
+            y = gameWorld.getPlayer().getY() + 120 - ( 24 * isSquatting );
         }
 
         setX(x);

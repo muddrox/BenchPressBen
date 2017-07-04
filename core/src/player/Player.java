@@ -26,6 +26,8 @@ public class Player extends Sprite  {
     private float x;
     private float y;
 
+    private float yScale;
+
     private Rectangle collisionMask;
 
     public Player(String name, GameWorld gameWorld, float x, float y) {
@@ -43,6 +45,9 @@ public class Player extends Sprite  {
 
         moveSpeed = 5;
         direction = 0;
+
+        yScale = 1f;
+
         hsp = 0;
     }
 
@@ -95,5 +100,11 @@ public class Player extends Sprite  {
 
     public Rectangle getMask() {
         return collisionMask;
+    }
+
+    public float getyScale() { return yScale; }
+
+    public void setyScale(float yScale) {
+        this.yScale = yScale;
     }
 }

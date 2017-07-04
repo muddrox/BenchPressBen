@@ -24,9 +24,9 @@ public class GameWorld implements Screen {
     private Player player;
     private Texture buttons;
     private Weight weight;
-    private GUI gui;
-    private Boolean atGym;
     private Score score;
+    private Boolean atGym;
+    private GUI gui;
 
     public GameWorld(GameMain game) {
         this.game = game;
@@ -78,7 +78,7 @@ public class GameWorld implements Screen {
 
         timePassed += Gdx.graphics.getDeltaTime();
 
-        game.getBatch().draw(player.getCurrentFrame(), player.getX(), player.getY());
+        game.getBatch().draw(player.getCurrentFrame(), player.getX(), player.getY(), player.getWidth(), player.getHeight() * player.getyScale());
 
         game.getBatch().draw(weight, weight.getX(), weight.getY() );
 
