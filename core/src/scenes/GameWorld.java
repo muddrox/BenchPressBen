@@ -19,16 +19,12 @@ import static helpers.GameInfo.WIDTH;
 public class GameWorld implements Screen {
 
     private GameMain game;
-
     private float timePassed = 0;
-
     private Player player;
-
     private Texture buttons;
-
     private Weight weight;
-
     private GUI gui;
+    private Boolean atGym;
 
     public GameWorld(GameMain game) {
         this.game = game;
@@ -36,6 +32,7 @@ public class GameWorld implements Screen {
         player  = new Player("spr_player.atlas", this, 360, 160);
         weight  = new Weight("spr_weight.png", this, 360, 640);
         buttons = new Texture("bg_buttons.png");
+        atGym   = true;
 
         gui = new GUI(this);
     }
@@ -50,11 +47,21 @@ public class GameWorld implements Screen {
         Gdx.gl.glClearColor(1, .75f, 1, 1);
         Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
 
-        //update player movement
-        player.updateMotion();
-        weight.updateMotion();
+        if(weight.getY() <= 60){ // game over!
+            setAtGym(false);
+            Gdx.app.debug("game over", "Weight y: " + weight.getY());
+        }
+        // this constraint causes the game to crash
+        //if (getAtGym()) {
+            // update player movement
+            player.updateMotion();
+            // update weight movement
+            weight.updateMotion();
+            // update enemy movement
+            // enemy.updateMotion();
+        //}
 
-        if ( weight.contact(player) && weight.isHeld() == false && weight.getVsp() < 0 ){
+        if ( weight.contact(player) && !weight.isHeld() && weight.getVsp() < 0 ){
             weight.setxOffset( ( weight.getX() + weight.getWidth()/2 ) - ( player.getX() + player.getWidth()/2 ) );
             weight.setHeld(true);
         }
@@ -77,12 +84,10 @@ public class GameWorld implements Screen {
     public float getTimePassed() {
         return timePassed;
     }
-
-    public Player getPlayer() {
-        return player;
-    }
-
+    public Player getPlayer() { return player; }
     public OrthographicCamera getCam() { return game.getCam(); }
+    public Boolean getAtGym() { return atGym; }
+    public void setAtGym(Boolean atGym) { this.atGym = atGym; }
 
     @Override
     public void resize(int width, int height) {
