@@ -1,0 +1,19 @@
+
+spr_enemy.png
+format: RGBA8888
+filter: Nearest,Nearest
+repeat: none
+spr_player
+  rotate: false
+  xy: 1, 1
+  size: 64, 64
+  orig: 64, 64
+  offset: 0, 0
+  index: 0
+spr_player
+  rotate: false
+  xy: 67, 1
+  size: 64, 64
+  orig: 64, 64
+  offset: 0, 0
+  index: 1

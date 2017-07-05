@@ -22,6 +22,7 @@ public class GameWorld implements Screen {
     private GameMain game;
     private float timePassed = 0;
     private Player player;
+    private Texture background;
     private Texture buttons;
     private Weight weight;
     private Score score;
@@ -33,6 +34,7 @@ public class GameWorld implements Screen {
 
         player  = new Player("spr_player.atlas", this, 360, 160);
         weight  = new Weight("spr_weight.png", this, 360, 640);
+        background = new Texture("bg_main.png");
         buttons = new Texture("bg_buttons.png");
         atGym   = true;
 
@@ -71,7 +73,17 @@ public class GameWorld implements Screen {
             weight.setHeld(true);
         }
 
-        gui.drawGui();
+        game.getBatch().begin();
+
+        game.getBatch().draw(background, 0, 0);
+
+        game.getBatch().end();
+
+        //The shapesRender doesn't work when drawn within the batch.
+        //We also need it drawn over the background so stop the batch.
+        gui.drawGui();  //Draw the gui.
+        //Now that the gui had been drawn, begin the batch again to
+        //draw everything else over on top of it.
 
         game.getBatch().begin();
 
@@ -118,6 +130,6 @@ public class GameWorld implements Screen {
 
     @Override
     public void dispose() {
-        //player.dispose();
+
     }
 }
