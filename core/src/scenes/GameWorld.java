@@ -56,19 +56,20 @@ public class GameWorld implements Screen {
         Gdx.gl.glClearColor(1, .75f, 1, 1);
         Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
 
-        if(weight.getY() <= 60){ // game over!
+        if(weight.getY() <= 160){ // game over!
             setAtGym(false);
             Gdx.app.debug("game over", "Weight y: " + weight.getY());
         }
+
         // this constraint causes the game to crash
-        //if (getAtGym()) {
+        if (getAtGym()) {
             // update player movement
             player.updateMotion();
             // update weight movement
             weight.updateMotion();
             // update enemy movement
             enemy.updateMotion();
-        //}
+        }
 
         if ( weight.contact(player) && !weight.isHeld() && weight.getVsp() < 0 ){
             weight.setxOffset( ( weight.getX() + weight.getWidth()/2 ) - ( player.getX() + player.getWidth()/2 ) );

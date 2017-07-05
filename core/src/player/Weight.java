@@ -44,6 +44,9 @@ public class Weight extends Sprite  {
         this.x = x;
         this.y = y;
 
+        setX(x);
+        setY(y);
+
         xOffset = 0;
 
         collisionMask = new Rectangle();

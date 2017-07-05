@@ -41,6 +41,9 @@ public class Player extends Sprite  {
         this.x = x - getWidth()/2;
         this.y = y;
 
+        setX(x);
+        setY(y);
+
         collisionMask = new Rectangle();
 
         moveSpeed = 5;
