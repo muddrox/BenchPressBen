@@ -1,6 +1,8 @@
 package gui;
 
+import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
+import com.badlogic.gdx.utils.Timer;
 
 import scenes.GameWorld;
 
@@ -11,8 +13,15 @@ public class GUI extends ShapeRenderer {
 
     private GameWorld gameWorld;
 
+    private boolean flickerOn;
+
+    private Color flickerCol;
+
     public GUI(GameWorld gameWorld) {
         this.gameWorld = gameWorld;
+
+        flickerOn = true;
+        flickerCol = Color.BLACK;
     }
 
     public void drawGui() {
@@ -20,7 +29,8 @@ public class GUI extends ShapeRenderer {
         setProjectionMatrix(gameWorld.getCam().combined);
 
         begin(ShapeRenderer.ShapeType.Filled);
-        setColor(0, 0, 0, 1);
+
+        setColor(flickerCol);
 
         //Black Borders
         rect(        40,          160,   -40, HEIGHT - 280); //left   border
@@ -38,5 +48,45 @@ public class GUI extends ShapeRenderer {
         rect(40 - fSize,          160, WIDTH - 80 + (fSize * 2),                    - fSize ); //bottom border
 
         end();
+    }
+
+    public boolean isFlickerOn() {
+        return flickerOn;
+    }
+
+    public void setFlickerOn(boolean flickerOn) {
+        this.flickerOn = flickerOn;
+
+        if ( flickerOn ) {
+            setFlickTime(0, 5);
+        } else {
+            flickerCol = Color.BLACK;
+            Timer.instance().clear();
+        }
+    }
+
+    private void setFlickTime(int currentFlicks, int maxFlicks) {
+        final int current, max;
+
+        current = currentFlicks;
+        max = maxFlicks;
+
+        if (flickerCol == Color.PURPLE) {
+            flickerCol = Color.BLACK;
+        } else {
+            flickerCol = Color.PURPLE;
+        }
+
+        if ( current < max ) {
+            Timer.schedule(new Timer.Task() {
+                @Override
+                public void run() {
+                    setFlickTime(current + 1, max);
+                }
+            }, .05f);
+        } else {
+            setFlickerOn(false);
+            return;
+        }
     }
 }

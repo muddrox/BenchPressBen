@@ -67,6 +67,7 @@ public class GameWorld implements Screen {
 
         if ( weight.contact(player) && !weight.isHeld() && weight.getVsp() < 0 ){
             weight.setxOffset( ( weight.getX() + weight.getWidth()/2 ) - ( player.getX() + player.getWidth()/2 ) );
+            gui.setFlickerOn(true);
             weight.setHeld(true);
         }
 
