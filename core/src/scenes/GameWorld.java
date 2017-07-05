@@ -9,6 +9,7 @@ import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import com.benchpressben.game.GameMain;
 
+import enemy.Enemy;
 import gui.GUI;
 import gui.Score;
 import player.Player;
@@ -27,6 +28,7 @@ public class GameWorld implements Screen {
     private Weight weight;
     private Score score;
     private Boolean atGym;
+    private Enemy enemy;
     private GUI gui;
 
     public GameWorld(GameMain game) {
@@ -34,6 +36,7 @@ public class GameWorld implements Screen {
 
         player  = new Player("spr_player.atlas", this, 360, 160);
         weight  = new Weight("spr_weight.png", this, 360, 640);
+        enemy  = new Enemy("spr_enemy.atlas", this, 360, 640);
         background = new Texture("bg_main.png");
         buttons = new Texture("bg_buttons.png");
         atGym   = true;
@@ -64,7 +67,7 @@ public class GameWorld implements Screen {
             // update weight movement
             weight.updateMotion();
             // update enemy movement
-            // enemy.updateMotion();
+            enemy.updateMotion();
         //}
 
         if ( weight.contact(player) && !weight.isHeld() && weight.getVsp() < 0 ){
@@ -94,6 +97,8 @@ public class GameWorld implements Screen {
         game.getBatch().draw(player.getCurrentFrame(), player.getX(), player.getY(), player.getWidth(), player.getHeight() * player.getyScale());
 
         game.getBatch().draw(weight, weight.getX(), weight.getY() );
+
+        game.getBatch().draw(enemy.getCurrentFrame(), enemy.getX(), enemy.getY());
 
         score.getBitmapFont().draw(game.getBatch(), score.getScoreString(), 100, 1240);
 
