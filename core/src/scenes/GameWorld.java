@@ -7,6 +7,7 @@ import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
+import com.badlogic.gdx.utils.Timer;
 import com.benchpressben.game.GameMain;
 
 import enemy.Enemy;
@@ -56,12 +57,11 @@ public class GameWorld implements Screen {
         Gdx.gl.glClearColor(1, .75f, 1, 1);
         Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
 
-        if(weight.getY() <= 160){ // game over!
+        if(weight.getY() <= 160 || enemy.getY() <= 160){ // game over!
             setAtGym(false);
             Gdx.app.debug("game over", "Weight y: " + weight.getY());
         }
 
-        // this constraint causes the game to crash
         if (getAtGym()) {
             // update player movement
             player.updateMotion();
@@ -69,6 +69,16 @@ public class GameWorld implements Screen {
             weight.updateMotion();
             // update enemy movement
             enemy.updateMotion();
+        } else {
+            Timer.schedule(new Timer.Task() {
+
+                @Override
+                public void run() {
+                    setAtGym(true);
+                    game.dispose();
+                    game.create();
+                }
+            }, 2f);
         }
 
         if ( weight.contact(player) && !weight.isHeld() && weight.getVsp() < 0 ){
@@ -136,6 +146,10 @@ public class GameWorld implements Screen {
 
     @Override
     public void dispose() {
-
+        background.dispose();
+        buttons.dispose();
+        game.dispose();
+        gui.dispose();
+        score.dispose();
     }
 }
