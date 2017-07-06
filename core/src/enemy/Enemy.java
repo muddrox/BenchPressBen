@@ -14,6 +14,7 @@ import scenes.GameWorld;
 import static com.badlogic.gdx.math.MathUtils.random;
 import static com.badlogic.gdx.math.MathUtils.randomSign;
 import static helpers.GameInfo.WIDTH;
+import static helpers.GameInfo.HEIGHT;
 
 public class Enemy extends Sprite  {
 
@@ -45,6 +46,9 @@ public class Enemy extends Sprite  {
 
         this.x = x - getWidth()/2;
         this.y = y;
+
+        setX(x);
+        setY(y);
 
         setOriginCenter();
         collisionMask = new Rectangle();
