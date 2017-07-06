@@ -1,7 +1,6 @@
 package player;
 
 import com.badlogic.gdx.Gdx;
-import com.badlogic.gdx.InputProcessor;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.Animation;
 import com.badlogic.gdx.graphics.g2d.Sprite;
@@ -11,6 +10,13 @@ import com.badlogic.gdx.math.Rectangle;
 
 import scenes.GameWorld;
 
+/**
+ * The Player class represents Ben, i.e, the character the user plays as. This class holds the variables
+ * and methods needed for Ben to appear and move on screen.
+ *
+ * @version
+ * @since
+ */
 public class Player extends Sprite  {
 
     private GameWorld gameWorld;
@@ -30,6 +36,17 @@ public class Player extends Sprite  {
 
     private Rectangle collisionMask;
 
+    /**
+     * Player Constructor.
+     * It creates an instance of Ben's sprite (texture), an instance of his textureAtlas and and instance of his move animation.
+     * It initializes Ben's X and Y coordinates and his moveSpeed, direction, yScale, and hsp variables.
+     * The constructor also creates an instance of Ben's collisionMask
+     *
+     * @param name
+     * @param gameWorld
+     * @param x          the starting X coordinate for Ben
+     * @param y          the starting Y coordinate for Ben
+     */
     public Player(String name, GameWorld gameWorld, float x, float y) {
         super ( new Texture(Gdx.files.internal("spr_player.png")) , 0, 0, 96, 144 );
 
@@ -54,6 +71,13 @@ public class Player extends Sprite  {
         hsp = 0;
     }
 
+    /**
+     * updateMotion method sets the X and Y coordinates that were updated in the previous cycle.
+     * It then modifies Ben's X with the horizontal speed (hsp) that was updated by the move function.
+     *
+     * The collisionMask is updated with Ben's new X and Y coordinates Finally, if Ben is moving (hsp != 0)
+     * than Ben performs his walking animation.
+     */
     public void updateMotion(){
         move();
 
@@ -71,6 +95,18 @@ public class Player extends Sprite  {
         }
     }
 
+    /**
+     * move method checks whether the screen is being touched (isTouched) and then determines where
+     * the screen is being touched. It stores the touch location in touchX and touchY, then checks
+     * that Ben is not already at either edge of the screen.
+     *
+     * After that check, the move method compares touchX and touchY to see what button (if any) was
+     * being pressed and assigns the left and right variables accordingly. move method then calculates
+     * left and right to form a direction. Left can only equal 0 or -1 and right can only equal 0 or 1,
+     * therefore, the sum of these two will always equal -1, 0- or 1.
+     *
+     * Finally, hsp is calculated.
+     */
     private void move(){
         int left, right, touchX, touchY;
 
@@ -99,6 +135,10 @@ public class Player extends Sprite  {
         hsp = ( moveSpeed * direction ) * isTouched;
     }
 
+
+    /********************************************************************
+     *Standard getters and setters
+     ********************************************************************/
     public TextureRegion getCurrentFrame() { return currentFrame; }
 
     public Rectangle getMask() {
