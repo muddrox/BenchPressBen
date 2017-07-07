@@ -1,5 +1,6 @@
 package gui;
 
+import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 
@@ -32,8 +33,8 @@ public class Score extends SpriteBatch {
 
         score = 0;
         scoreString = "Score: 0";
-        scoreFont = new BitmapFont();
-        scoreFont.getData().setScale(4.5f, 4.5f); //float scale x, float scale y
+        scoreFont = new BitmapFont(Gdx.files.internal("arial_large.fnt"));
+        scoreFont.getData().setScale(2f, 2f); //float scale x, float scale y
     }
 
     /*************************************************
