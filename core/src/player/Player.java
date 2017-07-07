@@ -38,11 +38,11 @@ public class Player extends Sprite  {
 
     /**
      * Player Constructor.
-     * It creates an instance of Ben's sprite (texture), an instance of his textureAtlas and and instance of his move animation.
+     * It creates an instance of Ben's sprite (texture), an instance of his textureAtlas and an instance of his move animation.
      * It initializes Ben's X and Y coordinates and his moveSpeed, direction, yScale, and hsp variables.
      * The constructor also creates an instance of Ben's collisionMask
      *
-     * @param name
+     * @param name       the internal file name of Ben's textureAtlas
      * @param gameWorld
      * @param x          the starting X coordinate for Ben
      * @param y          the starting Y coordinate for Ben
@@ -137,7 +137,7 @@ public class Player extends Sprite  {
 
 
     /********************************************************************
-     *Standard getters and setters
+     * Standard getters and setters
      ********************************************************************/
     public TextureRegion getCurrentFrame() { return currentFrame; }
 

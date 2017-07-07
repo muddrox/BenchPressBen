@@ -1,11 +1,8 @@
 package player;
 
 import com.badlogic.gdx.Gdx;
-import com.badlogic.gdx.Screen;
 import com.badlogic.gdx.graphics.Texture;
-import com.badlogic.gdx.graphics.g2d.Animation;
 import com.badlogic.gdx.graphics.g2d.Sprite;
-import com.badlogic.gdx.graphics.g2d.TextureAtlas;
 import com.badlogic.gdx.math.Intersector;
 import com.badlogic.gdx.math.Rectangle;
 
@@ -14,6 +11,14 @@ import scenes.GameWorld;
 import static helpers.GameInfo.WIDTH;
 
 
+/**
+ * The Weight class represent the weight Ben throws, the methods necessary to update its motion; check
+ * if the weight is being held by Ben, has Ben re-caught the weight after throwing it; and the variables
+ * needed to manage the weight's horizontal and vertical speeds.
+ *
+ * @version
+ * @since
+ */
 public class Weight extends Sprite  {
 
     private GameWorld gameWorld;
@@ -34,6 +39,18 @@ public class Weight extends Sprite  {
 
     private Rectangle collisionMask;
 
+    /**
+     * Weight constructor
+     * It creates an instance of the weight's texture, sets the weight's starting position as well as
+     * creates an instance of the weight's collisionMask.
+     *
+     * The constructor then initializes the weight's variables and sets its isHeld Boolean to true.
+     *
+     * @param name       the internal file name for the weight's texture
+     * @param gameWorld
+     * @param x          the starting X coordinate for the weight
+     * @param y          the starting Y coordinate for the weight
+     */
     public Weight(String name, GameWorld gameWorld, float x, float y) {
         super( new Texture(Gdx.files.internal(name)) );
 
@@ -62,6 +79,9 @@ public class Weight extends Sprite  {
         isHeld = true;
     }
 
+    /**
+     *
+     */
     public void updateMotion(){
         int touchX, touchY;
 
@@ -113,6 +133,11 @@ public class Weight extends Sprite  {
         collisionMask.set(x, y + 24, getWidth(), 16);
     }
 
+    /**
+     * move method controls the vertical movement of the weight after it is thrown. If the weight is
+     * above the ground (y = 160) and vsp (vertical speed) is greater than -18, the weight is affected
+     * by gravity. Else, set vsp to 0 and don't move the weight.
+     */
     private void move(){
         if ( y > 160 ) {
             if (vsp > -18) {
@@ -127,6 +152,9 @@ public class Weight extends Sprite  {
         return Intersector.overlaps(collisionMask,player.getMask());
     }
 
+    /********************************************************************
+     * Standard getters and setters
+     ********************************************************************/
     public float getHsp() {
         return hsp;
     }
