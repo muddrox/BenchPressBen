@@ -120,6 +120,7 @@ public class GameWorld implements Screen {
         return timePassed;
     }
     public Player getPlayer() { return player; }
+    public Weight getWeight() { return weight; }
     public OrthographicCamera getCam() { return game.getCam(); }
     public Boolean getAtGym() { return atGym; }
     public void setAtGym(Boolean atGym) { this.atGym = atGym; }
