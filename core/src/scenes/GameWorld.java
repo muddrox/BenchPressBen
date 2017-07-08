@@ -13,6 +13,7 @@ import com.benchpressben.game.GameMain;
 import enemy.Enemy;
 import gui.GUI;
 import gui.Score;
+import messages.Loser;
 import player.Player;
 import player.Weight;
 
@@ -31,6 +32,7 @@ public class GameWorld implements Screen {
     private Boolean atGym;
     private Enemy enemy;
     private GUI gui;
+    private Loser loser;
 
     public GameWorld(GameMain game) {
         this.game = game;
@@ -41,9 +43,8 @@ public class GameWorld implements Screen {
         background = new Texture("bg_main.png");
         buttons = new Texture("bg_buttons.png");
         atGym   = true;
-
-        gui = new GUI(this);
-
+        loser = new Loser();
+        gui   = new GUI(this);
         score = new Score(this);
     }
 
@@ -57,29 +58,6 @@ public class GameWorld implements Screen {
         Gdx.gl.glClearColor(1, .75f, 1, 1);
         Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
 
-        if(weight.getY() <= 160 || enemy.getY() <= 160){ // game over!
-            setAtGym(false);
-            Gdx.app.debug("game over", "Weight y: " + weight.getY());
-        }
-
-        if (getAtGym()) {
-            // update player movement
-            player.updateMotion();
-            // update weight movement
-            weight.updateMotion();
-            // update enemy movement
-            enemy.updateMotion();
-        } else {
-            Timer.schedule(new Timer.Task() {
-
-                @Override
-                public void run() {
-                    setAtGym(true);
-                    game.dispose();
-                    game.create();
-                }
-            }, 2f);
-        }
 
         if ( weight.contact(player) && !weight.isHeld() && weight.getVsp() < 0 ){
             weight.setxOffset( ( weight.getX() + weight.getWidth()/2 ) - ( player.getX() + player.getWidth()/2 ) );
@@ -101,6 +79,34 @@ public class GameWorld implements Screen {
 
         game.getBatch().begin();
 
+        // these checks need to happen after batch has started
+        if(weight.getY() <= 160 || enemy.getY() <= 160){ // game over!
+            setAtGym(false);
+            Gdx.app.debug("game over", "Weight y: " + weight.getY());
+        }
+
+        if (getAtGym()) {
+            // update player movement
+            player.updateMotion();
+            // update weight movement
+            weight.updateMotion();
+            // update enemy movement
+            enemy.updateMotion();
+        } else {
+            loser.getTextFont().draw(game.getBatch(), loser.getText(), 120, 640); //batch, string, x, y
+            /*Timer.schedule(new Timer.Task() {
+
+                @Override
+                public void run() {
+                    setAtGym(true);
+                    game.dispose();
+                    game.create();
+                }
+            }, 2f);*/
+        }
+
+        loser.getTextFont().draw(game.getBatch(), loser.getText(), 120, 640); //batch, string, x, y
+
         game.getBatch().draw(buttons, 0, 0);
 
         timePassed += Gdx.graphics.getDeltaTime();
@@ -111,7 +117,7 @@ public class GameWorld implements Screen {
 
         game.getBatch().draw(enemy.getCurrentFrame(), enemy.getX(), enemy.getY());
 
-        score.getBitmapFont().draw(game.getBatch(), score.getScoreString(), 100, 1240);
+        score.getBitmapFont().draw(game.getBatch(), score.getScoreString(), 100, 1240); //batch, string, x, y
 
         game.getBatch().end();
     }
