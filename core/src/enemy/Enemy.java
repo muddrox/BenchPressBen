@@ -9,6 +9,7 @@ import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.math.Rectangle;
 import com.badlogic.gdx.utils.Timer;
 
+import helpers.Alarm;
 import scenes.GameWorld;
 
 import static com.badlogic.gdx.math.MathUtils.random;
@@ -27,12 +28,15 @@ public class Enemy extends Sprite  {
     private float moveSpeed;
     private int direction;
     private float hsp;
+    private float vsp;
 
     private float x;
     private float y;
 
     private float minTime;
     private float maxTime;
+
+    private Alarm moveTimer;
 
     private Rectangle collisionMask;
 
@@ -60,8 +64,9 @@ public class Enemy extends Sprite  {
         maxTime = 2.5f;
 
         hsp = 0;
+        vsp = -1;
 
-        setMoveTime(random(minTime,maxTime));
+        moveTimer = new Alarm(random(minTime,maxTime), true);
     }
 
     public void updateMotion(){
@@ -71,6 +76,7 @@ public class Enemy extends Sprite  {
         setY(y);
 
         x += hsp;
+        y += vsp;
 
         collisionMask.set(x,y,getWidth(),getHeight());
         currentFrame = (TextureRegion) animation.getKeyFrame(gameWorld.getTimePassed(), true);
@@ -82,11 +88,11 @@ public class Enemy extends Sprite  {
         if ( !currentFrame.isFlipX() && direction == -1) {
             currentFrame.flip(true, false);
         }
-
-        Gdx.app.log("direction: ", String.valueOf(direction));
     }
 
     private void move(){
+        moveTimer.updateAlarm(Gdx.graphics.getDeltaTime());
+
         if ( direction == 1 ) {
             if ( hsp < moveSpeed * direction ) {
                 hsp += .05;
@@ -101,8 +107,12 @@ public class Enemy extends Sprite  {
             direction = -direction;
             hsp = -hsp;
 
-            Timer.instance().clear();
-            setMoveTime(random(minTime,maxTime));
+            moveTimer.resetAlarm(random(minTime,maxTime), true);
+        }
+
+        if ( moveTimer.isFinished() ){
+            direction = -direction;
+            moveTimer.resetAlarm(random(minTime,maxTime), true);
         }
     }
 
@@ -113,15 +123,4 @@ public class Enemy extends Sprite  {
     }
 
     public int getDirection() { return direction; }
-
-    private void setMoveTime(float time) {
-
-        Timer.schedule(new Timer.Task() {
-            @Override
-            public void run() {
-                direction = -direction;
-                setMoveTime(random(minTime,maxTime));
-            }
-        }, time);
-    }
 }
