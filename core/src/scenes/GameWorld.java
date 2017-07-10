@@ -127,6 +127,16 @@ public class GameWorld implements Screen {
 
         game.getBatch().draw(background, 0, 0);
 
+        timePassed += Gdx.graphics.getDeltaTime();
+
+        game.getBatch().draw(player.getCurrentFrame(), player.getX(), player.getY(), player.getWidth(), player.getHeight() * player.getyScale());
+
+        game.getBatch().draw(weight, weight.getX(), weight.getY() );
+
+        for ( Enemy enemy : enemies ) {
+            game.getBatch().draw(enemy.getCurrentFrame(), enemy.getX(), enemy.getY());
+        }
+
         game.getBatch().end();
 
         //The shapesRender doesn't work when drawn within the batch.
@@ -137,20 +147,10 @@ public class GameWorld implements Screen {
 
         game.getBatch().begin();
 
-        if ( !getAtGym() ) {
-            loser.getTextFont().draw(game.getBatch(), loser.getText(), 120, 640); //batch, string, x, y
-        }
-
         game.getBatch().draw(buttons, 0, 0);
 
-        timePassed += Gdx.graphics.getDeltaTime();
-
-        game.getBatch().draw(player.getCurrentFrame(), player.getX(), player.getY(), player.getWidth(), player.getHeight() * player.getyScale());
-
-        game.getBatch().draw(weight, weight.getX(), weight.getY() );
-
-        for ( Enemy enemy : enemies ) {
-            game.getBatch().draw(enemy.getCurrentFrame(), enemy.getX(), enemy.getY());
+        if ( !getAtGym() ) {
+            loser.getTextFont().draw(game.getBatch(), loser.getText(), 120, 640); //batch, string, x, y
         }
 
         score.getScoreFont().draw(game.getBatch(), score.getScoreString(), 100, 1240); //batch, string, x, y
