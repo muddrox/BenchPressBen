@@ -3,6 +3,7 @@ package gui;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
+import com.badlogic.gdx.utils.Queue;
 
 import scenes.GameWorld;
 
@@ -20,7 +21,7 @@ public class Score extends SpriteBatch {
 
     private int score;
     private String scoreString;
-    BitmapFont scoreFont;
+    private BitmapFont scoreFont;
 
     /**
      * The Constructor. It initializes the score (int), scoreString (String), creates an instance
@@ -33,8 +34,14 @@ public class Score extends SpriteBatch {
 
         score = 0;
         scoreString = "Score: 0";
+
         scoreFont = new BitmapFont(Gdx.files.internal("arial_large.fnt"));
         scoreFont.getData().setScale(2f, 2f); //float scale x, float scale y
+    }
+
+    public void updateScore (int points) {
+        score += points;
+        scoreString = "Score: " + score;
     }
 
     /*************************************************
@@ -42,16 +49,5 @@ public class Score extends SpriteBatch {
      *************************************************/
     public int getScore() { return score; }
     public String getScoreString() { return scoreString; }
-    public BitmapFont getBitmapFont() { return scoreFont; }
-
-
-
-    //a brief psuedo-code to show the idea of how it looks like the scoreString can be updated
-    /*
-    if()) {
-        score += 20;
-        scoreString = "score: " + score;
-    }
-    */
-
+    public BitmapFont getScoreFont() { return scoreFont; }
 }

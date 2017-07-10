@@ -118,15 +118,29 @@ public class Player extends Sprite  {
         touchX = Gdx.input.getX();
         touchY = Gdx.input.getY();
 
-        if ( x > 40 ) {
-            if (touchX < 360 && touchY > Gdx.graphics.getHeight() - 240) {
-                left = -1;
+        if (gameWorld.getWeight().isHeld()) {
+            if (x > 80) {
+                if (touchX < 360 && touchY > Gdx.graphics.getHeight() - 240) {
+                    left = -1;
+                }
             }
-        }
 
-        if ( x < 720 - getWidth() - 40 ) {
-            if (touchX > 360 && touchX < 720 && touchY > Gdx.graphics.getHeight() - 240) {
-                right = 1;
+            if (x < 680 - getWidth() - 40) {
+                if (touchX > 360 && touchX < 720 && touchY > Gdx.graphics.getHeight() - 240) {
+                    right = 1;
+                }
+            }
+        } else {
+            if (x > 40) {
+                if (touchX < 360 && touchY > Gdx.graphics.getHeight() - 240) {
+                    left = -1;
+                }
+            }
+
+            if (x < 720 - getWidth() - 40) {
+                if (touchX > 360 && touchX < 720 && touchY > Gdx.graphics.getHeight() - 240) {
+                    right = 1;
+                }
             }
         }
 

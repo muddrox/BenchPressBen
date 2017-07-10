@@ -14,8 +14,10 @@ import com.benchpressben.game.GameMain;
 
 import enemy.Enemy;
 import gui.GUI;
+import gui.PointsQueue;
 import gui.Score;
 import helpers.Alarm;
+import messages.Loser;
 import player.Player;
 import player.Weight;
 
@@ -35,11 +37,14 @@ public class GameWorld implements Screen {
     private Boolean atGym;
     private Array<Enemy> enemies;
     private GUI gui;
+
     private float minTime;
     private float maxTime;
 
     private Alarm resetGameAlarm;
     private Alarm spawnAlarm;
+
+    private Loser loser;
 
     public GameWorld(GameMain game) {
         this.game = game;
@@ -53,6 +58,7 @@ public class GameWorld implements Screen {
         atGym   = true;
 
         gui = new GUI(this);
+        loser = new Loser();
         score = new Score(this);
 
         minTime = 5f;
@@ -97,6 +103,7 @@ public class GameWorld implements Screen {
             }
 
         } else {
+
             if ( !resetGameAlarm.isRunning() ){
                 resetGameAlarm.startAlarm();
             }
@@ -130,6 +137,10 @@ public class GameWorld implements Screen {
 
         game.getBatch().begin();
 
+        if ( !getAtGym() ) {
+            loser.getTextFont().draw(game.getBatch(), loser.getText(), 120, 640); //batch, string, x, y
+        }
+
         game.getBatch().draw(buttons, 0, 0);
 
         timePassed += Gdx.graphics.getDeltaTime();
@@ -142,7 +153,7 @@ public class GameWorld implements Screen {
             game.getBatch().draw(enemy.getCurrentFrame(), enemy.getX(), enemy.getY());
         }
 
-        score.getBitmapFont().draw(game.getBatch(), score.getScoreString(), 100, 1240);
+        score.getScoreFont().draw(game.getBatch(), score.getScoreString(), 100, 1240); //batch, string, x, y
 
         game.getBatch().end();
     }
@@ -151,6 +162,7 @@ public class GameWorld implements Screen {
         return timePassed;
     }
     public Player getPlayer() { return player; }
+    public Weight getWeight() { return weight; }
     public OrthographicCamera getCam() { return game.getCam(); }
     public Boolean getAtGym() { return atGym; }
     public void setAtGym(Boolean atGym) { this.atGym = atGym; }
