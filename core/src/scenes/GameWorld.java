@@ -12,6 +12,7 @@ import com.benchpressben.game.GameMain;
 
 import enemy.Enemy;
 import gui.GUI;
+import gui.PointsQueue;
 import gui.Score;
 import player.Player;
 import player.Weight;
@@ -111,7 +112,7 @@ public class GameWorld implements Screen {
 
         game.getBatch().draw(enemy.getCurrentFrame(), enemy.getX(), enemy.getY());
 
-        score.getBitmapFont().draw(game.getBatch(), score.getScoreString(), 100, 1240);
+        score.getScoreFont().draw(game.getBatch(), score.getScoreString(), 100, 1240);
 
         game.getBatch().end();
     }
