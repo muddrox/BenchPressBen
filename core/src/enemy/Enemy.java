@@ -110,6 +110,12 @@ public class Enemy extends Sprite  {
         }
 
         if ( x < 40 || x > WIDTH - 40 - getWidth() ){
+            if ( x < 360 ) {
+                x = 40;
+            } else {
+                x = WIDTH - 40 - getWidth();
+            }
+
             direction = -direction;
             hsp = -hsp;
 
