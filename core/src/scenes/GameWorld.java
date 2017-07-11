@@ -166,7 +166,7 @@ public class GameWorld implements Screen {
         }
 
         score.getScoreFont().draw(game.getBatch(), score.getScoreString(), 100, 1240); //batch, string, x, y
-
+        
         game.getBatch().end();
 
         //Remove destroyed objects
