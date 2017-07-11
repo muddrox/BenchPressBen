@@ -6,10 +6,12 @@ import com.badlogic.gdx.graphics.g2d.Animation;
 import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.graphics.g2d.TextureAtlas;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
+import com.badlogic.gdx.math.Intersector;
 import com.badlogic.gdx.math.Rectangle;
 import com.badlogic.gdx.utils.Timer;
 
 import helpers.Alarm;
+import player.Weight;
 import scenes.GameWorld;
 
 import static com.badlogic.gdx.math.MathUtils.random;
@@ -118,6 +120,10 @@ public class Enemy extends Sprite  {
             direction = -direction;
             moveTimer.resetAlarm(random(minTime,maxTime), true);
         }
+    }
+
+    public boolean contact(Weight weight){
+        return Intersector.overlaps(collisionMask, weight.getMask());
     }
 
     public TextureRegion getCurrentFrame() { return currentFrame; }
