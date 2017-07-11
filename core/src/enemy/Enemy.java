@@ -40,6 +40,8 @@ public class Enemy extends Sprite  {
 
     private Rectangle collisionMask;
 
+    private boolean destroyed;
+
     public Enemy(String name, GameWorld gameWorld, float x, float y) {
         super ( new Texture(Gdx.files.internal("spr_enemy.png")) , 0, 0, 64, 64 );
 
@@ -67,6 +69,8 @@ public class Enemy extends Sprite  {
         vsp = -1;
 
         moveTimer = new Alarm(random(minTime,maxTime), true);
+
+        destroyed = false;
     }
 
     public void updateMotion(){
@@ -123,4 +127,12 @@ public class Enemy extends Sprite  {
     }
 
     public int getDirection() { return direction; }
+
+    public boolean isDestroyed() {
+        return destroyed;
+    }
+
+    public void destroy() {
+        destroyed = true;
+    }
 }

@@ -12,6 +12,8 @@ import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.Timer;
 import com.benchpressben.game.GameMain;
 
+import java.util.ArrayList;
+
 import enemy.Enemy;
 import gui.GUI;
 import gui.PointsQueue;
@@ -35,7 +37,7 @@ public class GameWorld implements Screen {
     private Weight weight;
     private Score score;
     private Boolean atGym;
-    private Array<Enemy> enemies;
+    private ArrayList<Enemy> enemies;
     private GUI gui;
 
     private float minTime;
@@ -51,7 +53,7 @@ public class GameWorld implements Screen {
 
         player  = new Player("spr_player.atlas", this, 360, 160);
         weight  = new Weight("spr_weight.png", this, 360, 640);
-        enemies = new Array<Enemy>();
+        enemies = new ArrayList<Enemy>();
 
         background = new Texture("bg_main.png");
         buttons = new Texture("bg_buttons.png");
@@ -100,6 +102,10 @@ public class GameWorld implements Screen {
 
             for ( Enemy enemy : enemies ) {
                 enemy.updateMotion();
+
+                if ( enemy.getY() < 160 - enemy.getHeight() ) {
+                    enemy.destroy();
+                }
             }
 
         } else {
@@ -156,6 +162,9 @@ public class GameWorld implements Screen {
         score.getScoreFont().draw(game.getBatch(), score.getScoreString(), 100, 1240); //batch, string, x, y
 
         game.getBatch().end();
+
+        //Remove destroyed objects
+        removeDestroyed();
     }
 
     public float getTimePassed() {
@@ -198,5 +207,13 @@ public class GameWorld implements Screen {
 
     private void spawnEnemy(){
         enemies.add(new Enemy("spr_enemy.atlas", this, 40 + random(WIDTH - 144), HEIGHT - 80));
+    }
+
+    private void removeDestroyed(){
+        for ( int i = 0; i < enemies.size(); i++ ){
+            if ( enemies.get(i).isDestroyed() ){
+                enemies.remove(i);
+            }
+        }
     }
 }
