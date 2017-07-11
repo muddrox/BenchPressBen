@@ -36,6 +36,7 @@ public class GameWorld implements Screen {
     private Texture buttons;
     private Weight weight;
     private Score score;
+    private PointsQueue pQueue;
     private Boolean atGym;
     private ArrayList<Enemy> enemies;
     private GUI gui;
@@ -62,6 +63,7 @@ public class GameWorld implements Screen {
         gui = new GUI(this);
         loser = new Loser();
         score = new Score(this);
+        pQueue = new PointsQueue(this);
 
         minTime = 5f;
         maxTime = 10f;
@@ -166,6 +168,18 @@ public class GameWorld implements Screen {
         }
 
         score.getScoreFont().draw(game.getBatch(), score.getScoreString(), 100, 1240); //batch, string, x, y
+
+        if(pQueue.isPointsIncoming()) {
+            pQueue.getQueueFont().draw(game.getBatch(), pQueue.getQueueString(), 500, 1240); //batch, string, x, y
+            //if() {
+            pQueue.tickUpPoints();
+            //}
+        } else if (pQueue.isTickedUp()) {
+            pQueue.getQueueFont().draw(game.getBatch(), pQueue.getQueueString(), 500, 1240); //batch, string, x, y
+            //if() {
+            pQueue.tickDownPoints(score);
+            //}
+        }
         
         game.getBatch().end();
 
@@ -211,7 +225,6 @@ public class GameWorld implements Screen {
         buttons.dispose();
         game.dispose();
         gui.dispose();
-        score.dispose();
     }
 
     private void spawnEnemy(){
