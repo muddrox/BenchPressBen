@@ -105,6 +105,12 @@ public class GameWorld implements Screen {
             for ( Enemy enemy : enemies ) {
                 enemy.updateMotion();
 
+                if ( enemy.contact(weight) ){
+                    weight.setHsp( ( weight.getX() - enemy.getX() ) * 0.2f );
+                    weight.setVsp(15);
+                    enemy.destroy();
+                }
+
                 if ( enemy.getY() < 160 - enemy.getHeight() ) {
                     enemy.destroy();
                 }
