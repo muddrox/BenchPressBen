@@ -102,7 +102,7 @@ public class GameWorld implements Screen {
             for ( Enemy enemy : enemies ) {
                 enemy.updateMotion();
 
-                if ( enemy.contact(weight) && weight.isHeld() == false ){
+                if ( enemy.contact(weight) && !weight.isHeld() ){
                     weight.setHsp( ( weight.getX() - enemy.getX() ) * 0.2f );
                     weight.setVsp(15);
                     enemy.destroy();
@@ -122,7 +122,6 @@ public class GameWorld implements Screen {
             resetGameAlarm.updateAlarm(Gdx.graphics.getDeltaTime());
 
             if ( resetGameAlarm.isFinished() ){
-                setAtGym(true);
                 game.dispose();
                 game.create();
             }
@@ -160,11 +159,16 @@ public class GameWorld implements Screen {
 
         game.getBatch().draw(buttons, 0, 0);
 
-        if ( !getAtGym() ) {
-            loser.getTextFont().draw(game.getBatch(), loser.getText(), 120, 640); //batch, string, x, y
-        }
-
         score.getScoreFont().draw(game.getBatch(), score.getScoreString(), 100, 1240); //batch, string, x, y
+
+        if ( !getAtGym() ) {
+            String haters = loser.getText();
+            loser.getTextFont().draw(game.getBatch(), haters, loser.getX(), loser.getY()); //batch, string, x, y
+
+            // change color then jitter
+            loser.getTextFont().setColor(random(255f)/255f, random(255f)/255f, random(255f)/255f, 1f);
+            loser.getTextFont().draw(game.getBatch(), haters, loser.getJitX(), loser.getJitY()); //batch, string, x, y
+        }
 
         if(pQueue.isPointsIncoming()) {
             pQueue.getQueueFont().draw(game.getBatch(), pQueue.getQueueString(), 500, 1240); //batch, string, x, y
@@ -184,16 +188,23 @@ public class GameWorld implements Screen {
         removeDestroyed();
     }
 
-    public float getTimePassed() {
-        return timePassed;
-    }
-
+    /**
+     * GameWorld getters include:
+     * timePassed, player, weight, gui, cam, and atGym
+     * @return
+     */
+    public float getTimePassed() { return timePassed; }
     public Player getPlayer() { return player; }
     public Weight getWeight() { return weight; }
     public GUI getGUI() { return gui; }
-
     public OrthographicCamera getCam() { return game.getCam(); }
     public Boolean getAtGym() { return atGym; }
+
+    /**
+     * GameWorld setters:
+     * public setAtGym()
+     * @param atGym
+     */
     public void setAtGym(Boolean atGym) { this.atGym = atGym; }
 
     @Override
