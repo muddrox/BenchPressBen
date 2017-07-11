@@ -119,7 +119,7 @@ public class GameWorld implements Screen {
         game.getBatch().draw(enemy.getCurrentFrame(), enemy.getX(), enemy.getY());
 
         score.getScoreFont().draw(game.getBatch(), score.getScoreString(), 100, 1240); //batch, string, x, y
-
+        
         game.getBatch().end();
     }
 
