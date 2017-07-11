@@ -2,22 +2,28 @@ package scenes;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Screen;
+import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
+import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.Timer;
 import com.benchpressben.game.GameMain;
+
+import java.util.ArrayList;
 
 import enemy.Enemy;
 import gui.GUI;
 import gui.PointsQueue;
 import gui.Score;
+import helpers.Alarm;
 import messages.Loser;
 import player.Player;
 import player.Weight;
 
+import static com.badlogic.gdx.math.MathUtils.random;
 import static helpers.GameInfo.HEIGHT;
 import static helpers.GameInfo.WIDTH;
 
@@ -31,8 +37,15 @@ public class GameWorld implements Screen {
     private Weight weight;
     private Score score;
     private Boolean atGym;
-    private Enemy enemy;
+    private ArrayList<Enemy> enemies;
     private GUI gui;
+
+    private float minTime;
+    private float maxTime;
+
+    private Alarm resetGameAlarm;
+    private Alarm spawnAlarm;
+
     private Loser loser;
 
     public GameWorld(GameMain game) {
@@ -40,13 +53,23 @@ public class GameWorld implements Screen {
 
         player  = new Player("spr_player.atlas", this, 360, 160);
         weight  = new Weight("spr_weight.png", this, 360, 640);
-        enemy  = new Enemy("spr_enemy.atlas", this, 360, 640);
+        enemies = new ArrayList<Enemy>();
+
         background = new Texture("bg_main.png");
         buttons = new Texture("bg_buttons.png");
         atGym   = true;
+
+        gui = new GUI(this);
         loser = new Loser();
-        gui   = new GUI(this);
         score = new Score(this);
+
+        minTime = 5f;
+        maxTime = 10f;
+
+        spawnAlarm = new Alarm(random(minTime,maxTime), true);
+        resetGameAlarm = new Alarm(2f, false);
+
+        spawnEnemy();
     }
 
     @Override
@@ -59,16 +82,66 @@ public class GameWorld implements Screen {
         Gdx.gl.glClearColor(1, .75f, 1, 1);
         Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
 
+        if( weight.getY() <= 160 ){ // game over!
+            setAtGym(false);
+            Gdx.app.debug("game over", "Weight y: " + weight.getY());
+        }
+
+        if (getAtGym()) {
+            // update player movement
+            player.updateMotion();
+            // update weight movement
+            weight.updateMotion();
+            // update enemy movement and enemy alarm
+            spawnAlarm.updateAlarm(Gdx.graphics.getDeltaTime());
+
+            if ( spawnAlarm.isFinished() ){
+                spawnEnemy();
+                spawnAlarm.resetAlarm(random(minTime,maxTime), true);
+            }
+
+            for ( Enemy enemy : enemies ) {
+                enemy.updateMotion();
+
+                if ( enemy.getY() < 160 - enemy.getHeight() ) {
+                    enemy.destroy();
+                }
+            }
+
+        } else {
+
+            if ( !resetGameAlarm.isRunning() ){
+                resetGameAlarm.startAlarm();
+            }
+
+            resetGameAlarm.updateAlarm(Gdx.graphics.getDeltaTime());
+
+            if ( resetGameAlarm.isFinished() ){
+                setAtGym(true);
+                game.dispose();
+                game.create();
+            }
+        }
 
         if ( weight.contact(player) && !weight.isHeld() && weight.getVsp() < 0 ){
             weight.setxOffset( ( weight.getX() + weight.getWidth()/2 ) - ( player.getX() + player.getWidth()/2 ) );
-            gui.setFlickerOn(true);
+            gui.setFlicker(Color.PURPLE, 5);
             weight.setHeld(true);
         }
 
         game.getBatch().begin();
 
         game.getBatch().draw(background, 0, 0);
+
+        timePassed += Gdx.graphics.getDeltaTime();
+
+        game.getBatch().draw(player.getCurrentFrame(), player.getX(), player.getY(), player.getWidth(), player.getHeight() * player.getyScale());
+
+        game.getBatch().draw(weight, weight.getX(), weight.getY() );
+
+        for ( Enemy enemy : enemies ) {
+            game.getBatch().draw(enemy.getCurrentFrame(), enemy.getX(), enemy.getY());
+        }
 
         game.getBatch().end();
 
@@ -80,47 +153,18 @@ public class GameWorld implements Screen {
 
         game.getBatch().begin();
 
-        // these checks need to happen after batch has started
-        if(weight.getY() <= 160 || enemy.getY() <= 160){ // game over!
-            setAtGym(false);
-            Gdx.app.debug("game over", "Weight y: " + weight.getY());
-        }
-
-        if (getAtGym()) {
-            // update player movement
-            player.updateMotion();
-            // update weight movement
-            weight.updateMotion();
-            // update enemy movement
-            enemy.updateMotion();
-        } else {
-            loser.getTextFont().draw(game.getBatch(), loser.getText(), 120, 640); //batch, string, x, y
-            /*Timer.schedule(new Timer.Task() {
-
-                @Override
-                public void run() {
-                    setAtGym(true);
-                    game.dispose();
-                    game.create();
-                }
-            }, 2f);*/
-        }
-
-        loser.getTextFont().draw(game.getBatch(), loser.getText(), 120, 640); //batch, string, x, y
-
         game.getBatch().draw(buttons, 0, 0);
 
-        timePassed += Gdx.graphics.getDeltaTime();
-
-        game.getBatch().draw(player.getCurrentFrame(), player.getX(), player.getY(), player.getWidth(), player.getHeight() * player.getyScale());
-
-        game.getBatch().draw(weight, weight.getX(), weight.getY() );
-
-        game.getBatch().draw(enemy.getCurrentFrame(), enemy.getX(), enemy.getY());
+        if ( !getAtGym() ) {
+            loser.getTextFont().draw(game.getBatch(), loser.getText(), 120, 640); //batch, string, x, y
+        }
 
         score.getScoreFont().draw(game.getBatch(), score.getScoreString(), 100, 1240); //batch, string, x, y
         
         game.getBatch().end();
+
+        //Remove destroyed objects
+        removeDestroyed();
     }
 
     public float getTimePassed() {
@@ -159,5 +203,17 @@ public class GameWorld implements Screen {
         game.dispose();
         gui.dispose();
         score.dispose();
+    }
+
+    private void spawnEnemy(){
+        enemies.add(new Enemy("spr_enemy.atlas", this, 40 + random(WIDTH - 144), HEIGHT - 80));
+    }
+
+    private void removeDestroyed(){
+        for ( int i = 0; i < enemies.size(); i++ ){
+            if ( enemies.get(i).isDestroyed() ){
+                enemies.remove(i);
+            }
+        }
     }
 }

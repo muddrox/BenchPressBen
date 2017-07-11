@@ -1,9 +1,11 @@
 package gui;
 
+import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import com.badlogic.gdx.utils.Timer;
 
+import helpers.Alarm;
 import scenes.GameWorld;
 
 import static helpers.GameInfo.HEIGHT;
@@ -13,24 +15,36 @@ public class GUI extends ShapeRenderer {
 
     private GameWorld gameWorld;
 
-    private boolean flickerOn;
-
     private Color flickerCol;
+
+    private Alarm flickTimer;
+
+    private int flickCurrent;
+
+    private Color frameCol;
+
+    private int flickCap;
 
     public GUI(GameWorld gameWorld) {
         this.gameWorld = gameWorld;
 
-        flickerOn = true;
-        flickerCol = Color.BLACK;
+        flickTimer = new Alarm(0, false);
+
+        frameCol = Color.BLACK;
+
+        flickCurrent = 0;
+        flickCap = 0;
     }
 
     public void drawGui() {
         gameWorld.getCam().update();
         setProjectionMatrix(gameWorld.getCam().combined);
 
+        drawFlicker();
+
         begin(ShapeRenderer.ShapeType.Filled);
 
-        setColor(flickerCol);
+        setColor(frameCol);
 
         //Black Borders
         rect(        40,          160,   -40, HEIGHT - 280); //left   border
@@ -50,43 +64,32 @@ public class GUI extends ShapeRenderer {
         end();
     }
 
-    public boolean isFlickerOn() {
-        return flickerOn;
+    public void setFlicker(Color flickerCol, int flickCap) {
+        this.flickerCol = flickerCol;
+        this.flickCap = flickCap;
+        flickCurrent = 0;
+        flickTimer.startAlarm();
     }
 
-    public void setFlickerOn(boolean flickerOn) {
-        this.flickerOn = flickerOn;
-
-        if ( flickerOn ) {
-            setFlickTime(0, 5);
-        } else {
-            flickerCol = Color.BLACK;
-            Timer.instance().clear();
-        }
-    }
-
-    private void setFlickTime(int currentFlicks, int maxFlicks) {
-        final int current, max;
-
-        current = currentFlicks;
-        max = maxFlicks;
-
-        if (flickerCol == Color.PURPLE) {
-            flickerCol = Color.BLACK;
-        } else {
-            flickerCol = Color.PURPLE;
-        }
-
-        if ( current < max ) {
-            Timer.schedule(new Timer.Task() {
-                @Override
-                public void run() {
-                    setFlickTime(current + 1, max);
-                }
-            }, .05f);
-        } else {
-            setFlickerOn(false);
+    private void drawFlicker() {
+        if ( flickCurrent >= flickCap ){
+            frameCol = Color.BLACK;
+            flickTimer.resetAlarm(0,false);
             return;
+        }
+
+        flickTimer.updateAlarm(Gdx.graphics.getDeltaTime());
+
+        if ( flickTimer.isFinished() ) {
+
+            if (frameCol == flickerCol) {
+                frameCol = Color.BLACK;
+            } else {
+                frameCol = flickerCol;
+            }
+
+            flickTimer.resetAlarm(.025f, true);
+            flickCurrent++;
         }
     }
 }
