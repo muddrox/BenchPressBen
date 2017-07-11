@@ -11,6 +11,7 @@ import scenes.GameWorld;
 
 import static com.badlogic.gdx.math.MathUtils.random;
 import static helpers.GameInfo.WIDTH;
+import static java.lang.Math.signum;
 
 /**
  * The Weight class represent the weight Ben throws, the methods necessary to update its motion; check
@@ -36,9 +37,11 @@ public class Weight extends Sprite  {
     private float x;
     private float y;
 
-    private float xOffset;
+    private int xOffset;
 
     private Rectangle collisionMask;
+
+    private int angle;
 
     /**
      * Weight constructor
@@ -111,9 +114,17 @@ public class Weight extends Sprite  {
 
             if ( xOffset != 0 ){
                 if ( Math.abs(xOffset) > 5 ){
-                    xOffset += 10 * -Math.signum(xOffset);
+                    xOffset += 10 * -signum(xOffset);
                 } else {
-                    xOffset += 1  * -Math.signum(xOffset);
+                    xOffset += 1  * -signum(xOffset);
+                }
+            }
+
+            if ( angle != 0 ){
+                if ( Math.abs(angle) > 5 ){
+                    angle += 10 * -signum(angle);
+                } else {
+                    angle += 1 * -signum(angle);
                 }
             }
 
@@ -148,6 +159,10 @@ public class Weight extends Sprite  {
             gameWorld.getGUI().setFrameEffect(20);
 
             hsp = -hsp;
+        }
+
+        if ( angle != -hsp ){
+            angle += signum(-hsp);
         }
 
         if ( y > 160 ) {
@@ -189,11 +204,13 @@ public class Weight extends Sprite  {
         this.vsp = vsp;
     }
 
-    public void setxOffset(float xOffset) {
+    public void setxOffset(int xOffset) {
         this.xOffset = xOffset;
     }
 
     public Rectangle getMask() {
         return collisionMask;
     }
+
+    public int getAngle() { return angle; }
 }

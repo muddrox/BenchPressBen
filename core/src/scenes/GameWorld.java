@@ -129,7 +129,7 @@ public class GameWorld implements Screen {
         }
 
         if ( weight.contact(player) && !weight.isHeld() && weight.getVsp() < 0 ){
-            weight.setxOffset( ( weight.getX() + weight.getWidth()/2 ) - ( player.getX() + player.getWidth()/2 ) );
+            weight.setxOffset((int) (( weight.getX() + weight.getWidth()/2 ) - ( player.getX() + player.getWidth()/2 )));
             gui.setFlicker(Color.PURPLE, 5);
             weight.setHeld(true);
         }
@@ -142,7 +142,7 @@ public class GameWorld implements Screen {
 
         game.getBatch().draw(player.getCurrentFrame(), player.getX(), player.getY(), player.getWidth(), player.getHeight() * player.getyScale());
 
-        game.getBatch().draw(weight, weight.getX(), weight.getY() );
+        game.getBatch().draw(weight, weight.getX(), weight.getY(), weight.getOriginX(), weight.getOriginY(), weight.getWidth(), weight.getHeight(), 1, 1, weight.getAngle() );
 
         for ( Enemy enemy : enemies ) {
             game.getBatch().draw(enemy.getCurrentFrame(), enemy.getX(), enemy.getY());
