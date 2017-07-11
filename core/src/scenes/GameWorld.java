@@ -111,7 +111,6 @@ public class GameWorld implements Screen {
             resetGameAlarm.updateAlarm(Gdx.graphics.getDeltaTime());
 
             if ( resetGameAlarm.isFinished() ){
-                setAtGym(true);
                 game.dispose();
                 game.create();
             }
@@ -149,18 +148,21 @@ public class GameWorld implements Screen {
 
         game.getBatch().draw(buttons, 0, 0);
 
-        if ( !getAtGym() ) {
-            loser.getTextFont().draw(game.getBatch(), loser.getText(), 120, 640); //batch, string, x, y
-        }
-
         score.getScoreFont().draw(game.getBatch(), score.getScoreString(), 100, 1240); //batch, string, x, y
+
+        if ( !getAtGym() ) {
+            String haters = loser.getText();
+            loser.getTextFont().draw(game.getBatch(), haters, loser.getX(), loser.getY()); //batch, string, x, y
+
+            // change color then jitter
+            loser.getTextFont().setColor(random(255f)/255f, random(255f)/255f, random(255f)/255f, 1f);
+            loser.getTextFont().draw(game.getBatch(), haters, loser.getJitX(), loser.getJitY()); //batch, string, x, y
+        }
 
         game.getBatch().end();
     }
 
-    public float getTimePassed() {
-        return timePassed;
-    }
+    public float getTimePassed() { return timePassed; }
     public Player getPlayer() { return player; }
     public Weight getWeight() { return weight; }
     public OrthographicCamera getCam() { return game.getCam(); }
