@@ -6,10 +6,6 @@ import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.Texture;
-import com.badlogic.gdx.graphics.g2d.TextureRegion;
-import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
-import com.badlogic.gdx.utils.Array;
-import com.badlogic.gdx.utils.Timer;
 import com.benchpressben.game.GameMain;
 
 import java.util.ArrayList;
@@ -24,6 +20,7 @@ import player.Player;
 import player.Weight;
 
 import static com.badlogic.gdx.math.MathUtils.random;
+
 import static helpers.GameInfo.HEIGHT;
 import static helpers.GameInfo.WIDTH;
 

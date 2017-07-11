@@ -9,8 +9,8 @@ import com.badlogic.gdx.math.Rectangle;
 
 import scenes.GameWorld;
 
+import static com.badlogic.gdx.math.MathUtils.random;
 import static helpers.GameInfo.WIDTH;
-
 
 /**
  * The Weight class represent the weight Ben throws, the methods necessary to update its motion; check
@@ -143,8 +143,10 @@ public class Weight extends Sprite  {
      */
     private void move(){
         if ( x < 40 || x > WIDTH - 40 - getWidth() ) {
+            gameWorld.getGUI().setBorderColor( new Color(random(255f)/255f, random(255f)/255f, random(255f)/255f, 1) );
             gameWorld.getGUI().setFlicker(Color.YELLOW, 1);
             gameWorld.getGUI().setFrameEffect(20);
+
             hsp = -hsp;
         }
 

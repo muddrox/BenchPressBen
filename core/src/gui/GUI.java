@@ -22,6 +22,7 @@ public class GUI extends ShapeRenderer {
     private int flickCurrent;
 
     private Color frameCol;
+    private Color borderCol;
 
     private int flickCap;
 
@@ -33,6 +34,7 @@ public class GUI extends ShapeRenderer {
         flickTimer = new Alarm(0, false);
 
         frameCol = Color.BLACK;
+        borderCol = new Color(0, 128f/255f, 128/255f, 1);
 
         flickCurrent = 0;
         flickCap = 0;
@@ -63,7 +65,7 @@ public class GUI extends ShapeRenderer {
 
         float fSize = 4f + frameEf;
 
-        setColor(0, 128f/255f, 128/255f, 1);
+        setColor(borderCol);
 
         rect(        40,  160 - fSize,                   -fSize, HEIGHT - 280 + (fSize * 2) ); //left   border
         rect(40 - fSize, HEIGHT - 120, WIDTH - 80 + (fSize * 2),                      fSize ); //top    border
@@ -100,6 +102,10 @@ public class GUI extends ShapeRenderer {
         this.flickCap = flickCap;
         flickCurrent = 0;
         flickTimer.startAlarm();
+    }
+
+    public void setBorderColor(Color borderCol) {
+        this.borderCol = borderCol;
     }
 
     public void setFrameEffect(float frameEf) {
