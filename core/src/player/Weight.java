@@ -1,6 +1,7 @@
 package player;
 
 import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.math.Intersector;
@@ -142,6 +143,8 @@ public class Weight extends Sprite  {
      */
     private void move(){
         if ( x < 40 || x > WIDTH - 40 - getWidth() ) {
+            gameWorld.getGUI().setFlicker(Color.YELLOW, 1);
+            gameWorld.getGUI().setFrameEffect(20);
             hsp = -hsp;
         }
 

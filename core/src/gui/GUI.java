@@ -25,6 +25,8 @@ public class GUI extends ShapeRenderer {
 
     private int flickCap;
 
+    private float frameEf;
+
     public GUI(GameWorld gameWorld) {
         this.gameWorld = gameWorld;
 
@@ -34,6 +36,8 @@ public class GUI extends ShapeRenderer {
 
         flickCurrent = 0;
         flickCap = 0;
+
+        frameEf = 0; //frame effect
     }
 
     public void drawGui() {
@@ -53,7 +57,12 @@ public class GUI extends ShapeRenderer {
         rect(         0,          160, WIDTH,        - 160); //bottom border
 
         //Thin Borders
-        float fSize = 12; //frame size
+        if ( frameEf > 0 ) {
+            frameEf -= 2;
+        }
+
+        float fSize = 4f + frameEf;
+
         setColor(0, 128f/255f, 128/255f, 1);
 
         rect(        40,  160 - fSize,                   -fSize, HEIGHT - 280 + (fSize * 2) ); //left   border
@@ -62,13 +71,6 @@ public class GUI extends ShapeRenderer {
         rect(40 - fSize,          160, WIDTH - 80 + (fSize * 2),                    - fSize ); //bottom border
 
         end();
-    }
-
-    public void setFlicker(Color flickerCol, int flickCap) {
-        this.flickerCol = flickerCol;
-        this.flickCap = flickCap;
-        flickCurrent = 0;
-        flickTimer.startAlarm();
     }
 
     private void drawFlicker() {
@@ -91,5 +93,16 @@ public class GUI extends ShapeRenderer {
             flickTimer.resetAlarm(.025f, true);
             flickCurrent++;
         }
+    }
+
+    public void setFlicker(Color flickerCol, int flickCap) {
+        this.flickerCol = flickerCol;
+        this.flickCap = flickCap;
+        flickCurrent = 0;
+        flickTimer.startAlarm();
+    }
+
+    public void setFrameEffect(float frameEf) {
+        this.frameEf = frameEf;
     }
 }

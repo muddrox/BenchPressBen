@@ -103,7 +103,7 @@ public class GameWorld implements Screen {
             for ( Enemy enemy : enemies ) {
                 enemy.updateMotion();
 
-                if ( enemy.contact(weight) ){
+                if ( enemy.contact(weight) && weight.isHeld() == false ){
                     weight.setHsp( ( weight.getX() - enemy.getX() ) * 0.2f );
                     weight.setVsp(15);
                     enemy.destroy();
@@ -176,8 +176,11 @@ public class GameWorld implements Screen {
     public float getTimePassed() {
         return timePassed;
     }
+
     public Player getPlayer() { return player; }
     public Weight getWeight() { return weight; }
+    public GUI getGUI() { return gui; }
+
     public OrthographicCamera getCam() { return game.getCam(); }
     public Boolean getAtGym() { return atGym; }
     public void setAtGym(Boolean atGym) { this.atGym = atGym; }
