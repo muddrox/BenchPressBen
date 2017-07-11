@@ -6,10 +6,12 @@ import com.badlogic.gdx.graphics.g2d.Animation;
 import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.graphics.g2d.TextureAtlas;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
+import com.badlogic.gdx.math.Intersector;
 import com.badlogic.gdx.math.Rectangle;
 import com.badlogic.gdx.utils.Timer;
 
 import helpers.Alarm;
+import player.Weight;
 import scenes.GameWorld;
 
 import static com.badlogic.gdx.math.MathUtils.random;
@@ -40,6 +42,8 @@ public class Enemy extends Sprite  {
 
     private Rectangle collisionMask;
 
+    private boolean destroyed;
+
     public Enemy(String name, GameWorld gameWorld, float x, float y) {
         super ( new Texture(Gdx.files.internal("spr_enemy.png")) , 0, 0, 64, 64 );
 
@@ -67,6 +71,8 @@ public class Enemy extends Sprite  {
         vsp = -1;
 
         moveTimer = new Alarm(random(minTime,maxTime), true);
+
+        destroyed = false;
     }
 
     public void updateMotion(){
@@ -116,6 +122,10 @@ public class Enemy extends Sprite  {
         }
     }
 
+    public boolean contact(Weight weight){
+        return Intersector.overlaps(collisionMask, weight.getMask());
+    }
+
     public TextureRegion getCurrentFrame() { return currentFrame; }
 
     public Rectangle getMask() {
@@ -123,4 +133,12 @@ public class Enemy extends Sprite  {
     }
 
     public int getDirection() { return direction; }
+
+    public boolean isDestroyed() {
+        return destroyed;
+    }
+
+    public void destroy() {
+        destroyed = true;
+    }
 }

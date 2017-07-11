@@ -6,11 +6,9 @@ import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.Texture;
-import com.badlogic.gdx.graphics.g2d.TextureRegion;
-import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
-import com.badlogic.gdx.utils.Array;
-import com.badlogic.gdx.utils.Timer;
 import com.benchpressben.game.GameMain;
+
+import java.util.ArrayList;
 
 import enemy.Enemy;
 import gui.GUI;
@@ -22,6 +20,7 @@ import player.Player;
 import player.Weight;
 
 import static com.badlogic.gdx.math.MathUtils.random;
+
 import static helpers.GameInfo.HEIGHT;
 import static helpers.GameInfo.WIDTH;
 
@@ -34,8 +33,9 @@ public class GameWorld implements Screen {
     private Texture buttons;
     private Weight weight;
     private Score score;
+    private PointsQueue pQueue;
     private Boolean atGym;
-    private Array<Enemy> enemies;
+    private ArrayList<Enemy> enemies;
     private GUI gui;
 
     private float minTime;
@@ -51,7 +51,7 @@ public class GameWorld implements Screen {
 
         player  = new Player("spr_player.atlas", this, 360, 160);
         weight  = new Weight("spr_weight.png", this, 360, 640);
-        enemies = new Array<Enemy>();
+        enemies = new ArrayList<Enemy>();
 
         background = new Texture("bg_main.png");
         buttons = new Texture("bg_buttons.png");
@@ -60,6 +60,7 @@ public class GameWorld implements Screen {
         gui = new GUI(this);
         loser = new Loser();
         score = new Score(this);
+        pQueue = new PointsQueue(this);
 
         minTime = 5f;
         maxTime = 10f;
@@ -100,6 +101,16 @@ public class GameWorld implements Screen {
 
             for ( Enemy enemy : enemies ) {
                 enemy.updateMotion();
+
+                if ( enemy.contact(weight) && !weight.isHeld() ){
+                    weight.setHsp( ( weight.getX() - enemy.getX() ) * 0.2f );
+                    weight.setVsp(15);
+                    enemy.destroy();
+                }
+
+                if ( enemy.getY() < 160 - enemy.getHeight() ) {
+                    enemy.destroy();
+                }
             }
 
         } else {
@@ -159,12 +170,29 @@ public class GameWorld implements Screen {
             loser.getTextFont().draw(game.getBatch(), haters, loser.getJitX(), loser.getJitY()); //batch, string, x, y
         }
 
+        if(pQueue.isPointsIncoming()) {
+            pQueue.getQueueFont().draw(game.getBatch(), pQueue.getQueueString(), 500, 1240); //batch, string, x, y
+            //if() {
+            pQueue.tickUpPoints();
+            //}
+        } else if (pQueue.isTickedUp()) {
+            pQueue.getQueueFont().draw(game.getBatch(), pQueue.getQueueString(), 500, 1240); //batch, string, x, y
+            //if() {
+            pQueue.tickDownPoints(score);
+            //}
+        }
+        
         game.getBatch().end();
+
+        //Remove destroyed objects
+        removeDestroyed();
     }
 
     public float getTimePassed() { return timePassed; }
     public Player getPlayer() { return player; }
     public Weight getWeight() { return weight; }
+    public GUI getGUI() { return gui; }
+
     public OrthographicCamera getCam() { return game.getCam(); }
     public Boolean getAtGym() { return atGym; }
     public void setAtGym(Boolean atGym) { this.atGym = atGym; }
@@ -195,10 +223,17 @@ public class GameWorld implements Screen {
         buttons.dispose();
         game.dispose();
         gui.dispose();
-        score.dispose();
     }
 
     private void spawnEnemy(){
         enemies.add(new Enemy("spr_enemy.atlas", this, 40 + random(WIDTH - 144), HEIGHT - 80));
+    }
+
+    private void removeDestroyed(){
+        for ( int i = 0; i < enemies.size(); i++ ){
+            if ( enemies.get(i).isDestroyed() ){
+                enemies.remove(i);
+            }
+        }
     }
 }

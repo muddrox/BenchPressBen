@@ -1,6 +1,7 @@
 package player;
 
 import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.math.Intersector;
@@ -8,8 +9,8 @@ import com.badlogic.gdx.math.Rectangle;
 
 import scenes.GameWorld;
 
+import static com.badlogic.gdx.math.MathUtils.random;
 import static helpers.GameInfo.WIDTH;
-
 
 /**
  * The Weight class represent the weight Ben throws, the methods necessary to update its motion; check
@@ -106,6 +107,8 @@ public class Weight extends Sprite  {
         if ( !isHeld ) {
             move();
         } else {
+            hsp = 0;
+
             if ( xOffset != 0 ){
                 if ( Math.abs(xOffset) > 5 ){
                     xOffset += 10 * -Math.signum(xOffset);
@@ -127,8 +130,8 @@ public class Weight extends Sprite  {
         setX(x);
         setY(y);
 
-        x += getHsp();
-        y += getVsp();
+        x += hsp;
+        y += vsp;
 
         collisionMask.set(x, y + 24, getWidth(), 16);
     }
@@ -139,6 +142,14 @@ public class Weight extends Sprite  {
      * by gravity. Else, set vsp to 0 and don't move the weight.
      */
     private void move(){
+        if ( x < 40 || x > WIDTH - 40 - getWidth() ) {
+            gameWorld.getGUI().setBorderColor( new Color(random(255f)/255f, random(255f)/255f, random(255f)/255f, 1) );
+            gameWorld.getGUI().setFlicker(Color.YELLOW, 1);
+            gameWorld.getGUI().setFrameEffect(20);
+
+            hsp = -hsp;
+        }
+
         if ( y > 160 ) {
             if (vsp > -18) {
                 vsp -= gravity;
@@ -155,9 +166,6 @@ public class Weight extends Sprite  {
     /********************************************************************
      * Standard getters and setters
      ********************************************************************/
-    public float getHsp() {
-        return hsp;
-    }
 
     public boolean isHeld() {
         return isHeld;
@@ -166,6 +174,12 @@ public class Weight extends Sprite  {
     public void setHeld(boolean held) {
         isHeld = held;
     }
+
+    public float getHsp() {
+        return hsp;
+    }
+
+    public void setHsp(float hsp) { this.hsp = hsp; }
 
     public float getVsp() {
         return vsp;
@@ -177,5 +191,9 @@ public class Weight extends Sprite  {
 
     public void setxOffset(float xOffset) {
         this.xOffset = xOffset;
+    }
+
+    public Rectangle getMask() {
+        return collisionMask;
     }
 }

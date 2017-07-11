@@ -15,14 +15,14 @@ import scenes.GameWorld;
  * @version 0.5
  * @since 7/7/2017
  */
-
 public class PointsQueue {
     private GameWorld gameWorld;
 
     public int points;
     public int pointsCounter;
 
-    private Boolean pointsInQueue;
+    private Boolean pointsIncoming;
+    private Boolean pointsInCounter;
     private Boolean tickedUp;
 
     private String queueString;
@@ -37,10 +37,11 @@ public class PointsQueue {
     public PointsQueue(GameWorld gameWorld) {
         this.gameWorld = gameWorld;
 
-        points = 5;
+        points = 100;
         pointsCounter = 0;
 
-        pointsInQueue = true;
+        pointsIncoming = true;
+        pointsInCounter = true;
         tickedUp = false;
 
         queueString = "+";
@@ -58,7 +59,7 @@ public class PointsQueue {
 
     public void addToQueue(int points) {
         this.points += points;
-        pointsInQueue = true;
+        pointsInCounter = true;
     }
 
     public void tickUpPoints() {
@@ -67,16 +68,18 @@ public class PointsQueue {
             this.points -= 1;
             queueString = "+" + pointsCounter;
         } else {
+            pointsIncoming = false;
             tickedUp = true;
         }
     }
 
-    public void tickDownPoints() {
+    public void tickDownPoints(Score scoreObject) {
         if (pointsCounter > 0) {
             pointsCounter -= 1;
+            scoreObject.updateScore(1);
             queueString = "+" + pointsCounter;
         } else {
-            pointsInQueue = false;
+            pointsInCounter = false;
         }
     }
 
@@ -89,6 +92,7 @@ public class PointsQueue {
      *************************************************/
     public String getQueueString() {return queueString; }
     public BitmapFont getQueueFont() { return queueFont; }
-    public Boolean isPointsInQueue() { return pointsInQueue; }
+    public Boolean isPointsInCounter() { return pointsInCounter; }
+    public Boolean isPointsIncoming() { return pointsIncoming; }
     public Boolean isTickedUp() { return tickedUp; }
 }
