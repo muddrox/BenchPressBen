@@ -2,8 +2,6 @@ package gui;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
-import com.badlogic.gdx.graphics.g2d.SpriteBatch;
-import com.badlogic.gdx.utils.Queue;
 
 import scenes.GameWorld;
 
@@ -16,7 +14,7 @@ import scenes.GameWorld;
  * @version 1.0
  * @since 7/3/2017
  */
-public class Score extends SpriteBatch {
+public class Score {
     private GameWorld gameWorld;
 
     private int score;
