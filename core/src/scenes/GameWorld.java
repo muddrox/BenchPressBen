@@ -119,7 +119,7 @@ public class GameWorld implements Screen {
                     soundManager.get("audio/sounds/snd_hit.wav", Sound.class).setPitch(s_explode, random(1f, 2f));
                     rays.add(new EffectRays(this, enemy.getX() + enemy.getWidth()/2, enemy.getY() + enemy.getHeight()/2, 100, 4, 0.18f));
 
-                    weight.setHsp( ( weight.getX() - enemy.getX() ) * 0.2f );
+                    weight.setHsp( ( (weight.getX() + weight.getWidth()/2) - (enemy.getX() + enemy.getWidth()/2) ) * 0.2f );
                     weight.setVsp(15);
 
                     pQueue.addToQueue(5);

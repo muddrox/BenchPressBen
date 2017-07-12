@@ -42,7 +42,6 @@ public class GameMain extends Game {
 		soundManager.finishLoading();
 
         setScreen(new Menu(this, soundManager));
-		//setScreen(new GameWorld(this, soundManager));
 	}
 
 	@Override
