@@ -2,8 +2,8 @@ package gui;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
-import com.badlogic.gdx.utils.Queue;
 
+import helpers.Alarm;
 import scenes.GameWorld;
 
 
@@ -12,14 +12,16 @@ import scenes.GameWorld;
  * can be ticked up, held for a moment, and then ticked into the actual Score class
  *
  * @author Aaron
- * @version 0.5
- * @since 7/7/2017
+ * @version 0.7
+ * @since 7/11/2017
  */
 public class PointsQueue {
     private GameWorld gameWorld;
 
-    public int points;
-    public int pointsCounter;
+    private int points;
+    private int pointsCounter;
+
+    private Alarm tickerHoldAlarm;
 
     private Boolean pointsIncoming;
     private Boolean pointsInCounter;
@@ -27,7 +29,6 @@ public class PointsQueue {
 
     private String queueString;
     private BitmapFont queueFont;
-    private Queue scoreQueue;
 
     /**
      * The constructor
@@ -37,39 +38,37 @@ public class PointsQueue {
     public PointsQueue(GameWorld gameWorld) {
         this.gameWorld = gameWorld;
 
-        points = 100;
+        points = 0;
         pointsCounter = 0;
 
-        pointsIncoming = true;
-        pointsInCounter = true;
+        pointsIncoming = false;
+        pointsInCounter = false;
         tickedUp = false;
+
+        tickerHoldAlarm = new Alarm(1.5f, false);
 
         queueString = "+";
         queueFont = new BitmapFont(Gdx.files.internal("arial_large.fnt"));
         queueFont.getData().setScale(1.25f, 1.25f);
-
-        scoreQueue = new Queue();
-    }
-
-
-    public void insertIntoQueue(int points) {
-        this.points += points;
-        scoreQueue.addFirst(points);
     }
 
     public void addToQueue(int points) {
         this.points += points;
-        pointsInCounter = true;
+        pointsIncoming = true;
+        tickedUp = false;
     }
 
     public void tickUpPoints() {
         if (this.points > 0) {
             pointsCounter += 1;
+            pointsInCounter = false;
+
             this.points -= 1;
             queueString = "+" + pointsCounter;
         } else {
             pointsIncoming = false;
             tickedUp = true;
+            tickerHoldAlarm.startAlarm();
         }
     }
 
@@ -80,11 +79,12 @@ public class PointsQueue {
             queueString = "+" + pointsCounter;
         } else {
             pointsInCounter = false;
+            tickerHoldAlarm.resetAlarm(1.5f, false);
         }
     }
 
-    public void clearQueue() {
-
+    public void updateTickerHold() {
+        tickerHoldAlarm.updateAlarm(Gdx.graphics.getDeltaTime());
     }
 
     /*************************************************
@@ -92,6 +92,7 @@ public class PointsQueue {
      *************************************************/
     public String getQueueString() {return queueString; }
     public BitmapFont getQueueFont() { return queueFont; }
+    public Boolean tickerHoldIsDone() { return tickerHoldAlarm.isFinished(); }
     public Boolean isPointsInCounter() { return pointsInCounter; }
     public Boolean isPointsIncoming() { return pointsIncoming; }
     public Boolean isTickedUp() { return tickedUp; }

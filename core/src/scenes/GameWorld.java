@@ -177,9 +177,11 @@ public class GameWorld implements Screen {
             //}
         } else if (pQueue.isTickedUp()) {
             pQueue.getQueueFont().draw(game.getBatch(), pQueue.getQueueString(), 500, 1240); //batch, string, x, y
-            //if() {
-            pQueue.tickDownPoints(score);
-            //}
+            if(pQueue.tickerHoldIsDone()) {
+                pQueue.tickDownPoints(score);
+            } else {
+                pQueue.updateTickerHold();
+            }
         }
         
         game.getBatch().end();
@@ -242,6 +244,7 @@ public class GameWorld implements Screen {
     private void removeDestroyed(){
         for ( int i = 0; i < enemies.size(); i++ ){
             if ( enemies.get(i).isDestroyed() ){
+                pQueue.addToQueue(5);
                 enemies.remove(i);
             }
         }
