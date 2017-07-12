@@ -9,6 +9,7 @@ import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 
 import scenes.GameWorld;
+import scenes.Menu;
 
 import static helpers.GameInfo.HEIGHT;
 import static helpers.GameInfo.WIDTH;
@@ -21,7 +22,7 @@ public class GameMain extends Game {
 
 	private AssetManager soundManager;
 
-	@Override
+    @Override
 	public void create () {
 
 		float aspectRatio = Gdx.graphics.getHeight()/Gdx.graphics.getWidth();
@@ -40,7 +41,8 @@ public class GameMain extends Game {
 		soundManager.load("audio/sounds/snd_hit.wav", Sound.class);
 		soundManager.finishLoading();
 
-		setScreen(new GameWorld(this, soundManager));
+        setScreen(new Menu(this, soundManager));
+		//setScreen(new GameWorld(this, soundManager));
 	}
 
 	@Override
@@ -65,4 +67,8 @@ public class GameMain extends Game {
 	}
 
 	public OrthographicCamera getCam() { return cam; }
+
+    public AssetManager getSoundManager() {
+        return soundManager;
+    }
 }
