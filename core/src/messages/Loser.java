@@ -18,6 +18,9 @@ public class Loser{
     private int x;
     private int y;
 
+    private float fontScaleWidth;
+    private float fontScaleHeight;
+
 
     /**
      * Loser constructor initializes private variables:
@@ -27,14 +30,26 @@ public class Loser{
      * @author Ethan Williams
      */
     public Loser() {
+        fontScaleWidth = 10f;
+        fontScaleHeight = 10f;
 
-        textFont = new BitmapFont(Gdx.files.internal("arial_large.fnt"));
-        textFont.getData().setScale(2f, 2f);
+        textFont = new BitmapFont(Gdx.files.internal("darling_48.fnt"));
+        textFont.getData().setScale(fontScaleWidth, fontScaleHeight);
         textFont.setColor(0f, 1f, 1f, 1f);
+
         Messages youLost = Messages.randomMess();
         text = youLost.toString();
+
         setX(135);
         setY(665);
+    }
+
+    public void shrinkText() {
+        if(fontScaleWidth > 2f || fontScaleHeight > 2f) {
+            fontScaleWidth -= 0.2f;
+            fontScaleHeight -= 0.20f;
+            textFont.getData().setScale(fontScaleWidth, fontScaleHeight);
+        }
     }
 
     /**

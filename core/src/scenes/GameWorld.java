@@ -72,8 +72,8 @@ public class GameWorld implements Screen {
 
         gui = new GUI(this);
         loser = new Loser();
-        score = new Score(this);
-        pQueue = new PointsQueue(this);
+        score = new Score();
+        pQueue = new PointsQueue();
 
         minTime = 5f;
         maxTime = 10f;
@@ -197,20 +197,25 @@ public class GameWorld implements Screen {
 
         if ( !getAtGym() ) {
             String haters = loser.getText();
-            loser.getTextFont().draw(game.getBatch(), haters, loser.getX(), loser.getY()); //batch, string, x, y
 
             // change color then jitter
             loser.getTextFont().setColor(random(255f)/255f, random(255f)/255f, random(255f)/255f, 1f);
             loser.getTextFont().draw(game.getBatch(), haters, loser.getJitX(), loser.getJitY()); //batch, string, x, y
+
+            loser.getTextFont().setColor(0f, 1f, 1f, 1f);
+            loser.getTextFont().draw(game.getBatch(), haters, loser.getX(), loser.getY()); //batch, string, x, y
+
+            loser.shrinkText();
         }
 
         if(pQueue.isPointsIncoming()) {
             pQueue.getQueueFont().draw(game.getBatch(), pQueue.getQueueString(), 500, 1240); //batch, string, x, y
-            //if() {
             pQueue.tickUpPoints();
-            //}
         } else if (pQueue.isTickedUp()) {
-            pQueue.getQueueFont().draw(game.getBatch(), pQueue.getQueueString(), 500, 1240); //batch, string, x, y
+            if(pQueue.isPointsInCounter()) {
+                pQueue.getQueueFont().draw(game.getBatch(), pQueue.getQueueString(), 500, 1240); //batch, string, x, y
+            }
+
             if(pQueue.tickerHoldIsDone()) {
                 pQueue.tickDownPoints(score);
             } else {
