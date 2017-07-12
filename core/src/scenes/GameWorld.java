@@ -185,6 +185,8 @@ public class GameWorld implements Screen {
 
             loser.getTextFont().setColor(0f, 1f, 1f, 1f);
             loser.getTextFont().draw(game.getBatch(), haters, loser.getX(), loser.getY()); //batch, string, x, y
+
+            loser.shrinkText();
         }
 
         if(pQueue.isPointsIncoming()) {
