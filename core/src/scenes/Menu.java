@@ -44,6 +44,8 @@ public class Menu implements Screen{
         Gdx.gl.glClearColor(1, .75f, 1, 1);
         Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
 
+        int isTouched = Gdx.input.isTouched()? 1 : 0;
+
         touchX = Gdx.input.getX();
         touchY = Gdx.input.getY();
 
@@ -51,10 +53,11 @@ public class Menu implements Screen{
         game.getBatch().draw(bg, 0, 0);
         game.getBatch().end();
 
-        if (touchX > 200 && touchX < 860){
-            if (touchY > 1720 && touchY < 1860){
-                game.setScreen(new GameWorld(game, game.getSoundManager()));
-                Gdx.app.debug("Setting game screen", "touchX:" + touchX + " touchY:" + touchY);
+        if ( isTouched == 1 ) {
+            if (touchX > 180 && touchX < 900) {
+                if (touchY > Gdx.graphics.getHeight() - 240 && touchY < Gdx.graphics.getHeight() - 55) {
+                    game.setScreen(new GameWorld(game, game.getSoundManager()));
+                }
             }
         }
     }
