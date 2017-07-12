@@ -57,6 +57,8 @@ public class GameWorld implements Screen {
 
     private Loser loser;
 
+    private int goal;
+
     public GameWorld(GameMain game, AssetManager soundManager) {
         this.game = game;
         this.soundManager = soundManager;
@@ -80,6 +82,7 @@ public class GameWorld implements Screen {
         loser = new Loser();
         score = new Score();
         pQueue = new PointsQueue();
+        goal = 10;
 
         minTime = 5f;
         maxTime = 10f;
@@ -116,6 +119,21 @@ public class GameWorld implements Screen {
             if ( spawnAlarm.isFinished() ){
                 spawnEnemy();
                 spawnAlarm.resetAlarm(random(minTime,maxTime), true);
+
+                //If score goal is met, amp up the difficulty.
+                if ( score.getScore() >= goal ){
+                    goal += 10;
+
+                    if ( minTime > 2f ){
+                        minTime -= 1f;
+                        maxTime -= 1f;
+                    }
+
+                    if ( minTime <= 2f && minTime > .4f ){
+                        minTime -= .2f;
+                        maxTime -= .2f;
+                    }
+                }
             }
 
             for ( Enemy enemy : enemies ) {

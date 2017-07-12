@@ -156,6 +156,13 @@ public class Weight extends Sprite  {
      */
     private void move(){
         if ( x < 40 || x > WIDTH - 40 - getWidth() ) {
+
+            if ( x < 360 ) {
+                x = 40;
+            } else {
+                x = WIDTH - 40 - getWidth();
+            }
+
             gameWorld.getSoundManager().get("audio/sounds/snd_bounce.wav", Sound.class).play();
 
             gameWorld.getGUI().setBorderColor( new Color(random(255f)/255f, random(255f)/255f, random(255f)/255f, 1) );
