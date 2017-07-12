@@ -3,8 +3,6 @@ package gui;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
 
-import scenes.GameWorld;
-
 
 /**
  * The Score class represents the score of the player as an object which contains an integer, string,
@@ -15,7 +13,6 @@ import scenes.GameWorld;
  * @since 7/3/2017
  */
 public class Score {
-    private GameWorld gameWorld;
 
     private int score;
     private String scoreString;
@@ -25,16 +22,14 @@ public class Score {
      * The Constructor. It initializes the score (int), scoreString (String), creates an instance
      * of scoreFont (BitmapFont), and sets the scale (size) of the font.
      *
-     * @param gameWorld the instance of the GameWorld that is being played in currently
      */
-    public Score(GameWorld gameWorld) {
-        this.gameWorld = gameWorld;
+    public Score() {
 
         score = 0;
         scoreString = "Score: 0";
 
-        scoreFont = new BitmapFont(Gdx.files.internal("arial_large.fnt"));
-        scoreFont.getData().setScale(2f, 2f); //float scale x, float scale y
+        scoreFont = new BitmapFont(Gdx.files.internal("destinie_48.fnt"));
+        scoreFont.getData().setScale(1.5f, 1.5f); //float scale x, float scale y
     }
 
     public void updateScore (int points) {

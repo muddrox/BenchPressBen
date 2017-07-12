@@ -4,7 +4,6 @@ import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
 
 import helpers.Alarm;
-import scenes.GameWorld;
 
 
 /**
@@ -16,7 +15,6 @@ import scenes.GameWorld;
  * @since 7/11/2017
  */
 public class PointsQueue {
-    private GameWorld gameWorld;
 
     private int points;
     private int pointsCounter;
@@ -33,10 +31,8 @@ public class PointsQueue {
     /**
      * The constructor
      *
-     * @param gameWorld
      */
-    public PointsQueue(GameWorld gameWorld) {
-        this.gameWorld = gameWorld;
+    public PointsQueue() {
 
         points = 0;
         pointsCounter = 0;
@@ -61,7 +57,7 @@ public class PointsQueue {
     public void tickUpPoints() {
         if (this.points > 0) {
             pointsCounter += 1;
-            pointsInCounter = false;
+            pointsInCounter = true;
 
             this.points -= 1;
             queueString = "+" + pointsCounter;

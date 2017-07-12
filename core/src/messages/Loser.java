@@ -28,7 +28,7 @@ public class Loser{
      */
     public Loser() {
 
-        textFont = new BitmapFont(Gdx.files.internal("arial_large.fnt"));
+        textFont = new BitmapFont(Gdx.files.internal("darling_48.fnt"));
         textFont.getData().setScale(2f, 2f);
         textFont.setColor(0f, 1f, 1f, 1f);
         Messages youLost = Messages.randomMess();
