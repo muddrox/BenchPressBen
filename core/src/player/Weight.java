@@ -66,8 +66,8 @@ public class Weight extends Sprite  {
         this.x = x;
         this.y = y;
 
-        setX(x);
-        setY(y);
+        setX(this.x);
+        setY(this.y);
 
         xOffset = 0;
 

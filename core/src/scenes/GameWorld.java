@@ -13,6 +13,7 @@ import com.benchpressben.game.GameMain;
 
 import java.util.ArrayList;
 
+import effects.EffectExplode;
 import effects.EffectRays;
 import enemy.Enemy;
 import gui.GUI;
@@ -43,6 +44,7 @@ public class GameWorld implements Screen {
     private Boolean atGym;
     private ArrayList<Enemy> enemies;
     private ArrayList<EffectRays> rays;
+    private ArrayList<EffectExplode> explosions;
     private GUI gui;
 
     private float minTime;
@@ -64,7 +66,8 @@ public class GameWorld implements Screen {
         player  = new Player("spr_player.atlas", this, 360, 160);
         weight  = new Weight("spr_weight.png", this, 360, 640);
         enemies = new ArrayList<Enemy>();
-        rays = new ArrayList<EffectRays>(); //EffectRays(this, 360, 640, 100, 10, 10);
+        rays = new ArrayList<EffectRays>();
+        explosions  = new ArrayList<EffectExplode>(); //new EffectExplode("spr_explode.atlas", this, 360, 640);
 
         background = new Texture("bg_main.png");
         buttons = new Texture("bg_buttons.png");
@@ -118,6 +121,7 @@ public class GameWorld implements Screen {
                     long s_explode = soundManager.get("audio/sounds/snd_hit.wav", Sound.class).play();
                     soundManager.get("audio/sounds/snd_hit.wav", Sound.class).setPitch(s_explode, random(1f, 2f));
                     rays.add(new EffectRays(this, enemy.getX() + enemy.getWidth()/2, enemy.getY() + enemy.getHeight()/2, 100, 4, 0.18f));
+                    explosions.add(new EffectExplode("spr_explode.atlas", this, enemy.getX() + enemy.getWidth()/2, enemy.getY() + enemy.getHeight()/2));
 
                     weight.setHsp( ( (weight.getX() + weight.getWidth()/2) - (enemy.getX() + enemy.getWidth()/2) ) * 0.2f );
                     weight.setVsp(15);
@@ -129,6 +133,11 @@ public class GameWorld implements Screen {
                 if ( enemy.getY() < 160 - enemy.getHeight() ) {
                     enemy.destroy();
                 }
+            }
+
+            //update the frames for explosion effects
+            for ( EffectExplode explode : explosions ) {
+                explode.updateFrames();
             }
 
         } else {
@@ -177,6 +186,10 @@ public class GameWorld implements Screen {
 
         for ( Enemy enemy : enemies ) {
             game.getBatch().draw(enemy.getCurrentFrame(), enemy.getX(), enemy.getY());
+        }
+
+        for ( EffectExplode explode : explosions ){
+            game.getBatch().draw(explode.getCurrentFrame(), explode.getX(), explode.getY(), explode.getOriginX(), explode.getOriginY(), explode.getWidth(), explode.getHeight(), 1, 1, explode.getAngle() );
         }
 
         game.getBatch().end();
@@ -292,6 +305,12 @@ public class GameWorld implements Screen {
         for ( int i = 0; i < rays.size(); i++ ){
             if ( rays.get(i).isDestroyed() ){
                 rays.remove(i);
+            }
+        }
+
+        for ( int i = 0; i < explosions.size(); i++ ){
+            if ( explosions.get(i).isDestroyed() ){
+                explosions.remove(i);
             }
         }
     }
