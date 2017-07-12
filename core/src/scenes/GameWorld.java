@@ -13,6 +13,7 @@ import com.benchpressben.game.GameMain;
 
 import java.util.ArrayList;
 
+import effects.EffectRays;
 import enemy.Enemy;
 import gui.GUI;
 import gui.PointsQueue;
@@ -41,6 +42,7 @@ public class GameWorld implements Screen {
     private PointsQueue pQueue;
     private Boolean atGym;
     private ArrayList<Enemy> enemies;
+    private ArrayList<EffectRays> rays;
     private GUI gui;
 
     private float minTime;
@@ -62,6 +64,7 @@ public class GameWorld implements Screen {
         player  = new Player("spr_player.atlas", this, 360, 160);
         weight  = new Weight("spr_weight.png", this, 360, 640);
         enemies = new ArrayList<Enemy>();
+        rays = new ArrayList<EffectRays>(); //EffectRays(this, 360, 640, 100, 10, 10);
 
         background = new Texture("bg_main.png");
         buttons = new Texture("bg_buttons.png");
@@ -93,7 +96,6 @@ public class GameWorld implements Screen {
 
         if( weight.getY() <= 160 ){ // game over!
             setAtGym(false);
-            Gdx.app.debug("game over", "Weight y: " + weight.getY());
         }
 
         if (getAtGym()) {
@@ -115,9 +117,12 @@ public class GameWorld implements Screen {
                 if ( enemy.contact(weight) && !weight.isHeld() ){
                     long s_explode = soundManager.get("audio/sounds/snd_hit.wav", Sound.class).play();
                     soundManager.get("audio/sounds/snd_hit.wav", Sound.class).setPitch(s_explode, random(1f, 2f));
+                    rays.add(new EffectRays(this, enemy.getX() + enemy.getWidth()/2, enemy.getY() + enemy.getHeight()/2, 100, 4, 0.18f));
 
                     weight.setHsp( ( weight.getX() - enemy.getX() ) * 0.2f );
                     weight.setVsp(15);
+
+                    pQueue.addToQueue(5);
                     enemy.destroy();
                 }
 
@@ -131,6 +136,8 @@ public class GameWorld implements Screen {
             if ( !resetGameAlarm.isRunning() ){
                 soundManager.get("audio/sounds/snd_fail.wav", Sound.class).play();
                 resetGameAlarm.startAlarm();
+
+                rays.add(new EffectRays(this, weight.getX() + weight.getWidth()/2, weight.getY() + weight.getHeight()/2, 640, 6, 10));
             }
 
             resetGameAlarm.updateAlarm(Gdx.graphics.getDeltaTime());
@@ -149,10 +156,20 @@ public class GameWorld implements Screen {
         }
 
         game.getBatch().begin();
-
         game.getBatch().draw(background, 0, 0);
+        game.getBatch().end();
 
         timePassed += Gdx.graphics.getDeltaTime();
+
+        //The shapesRender doesn't work when drawn within the batch.
+        //We also need it drawn over the background so stop the batch.
+        for ( EffectRays ray : rays ) {
+            ray.drawRays();  //draw the rays
+        }
+        //Now that the rays had been drawn, begin the batch again to
+        //draw everything else over on top of it.
+
+        game.getBatch().begin();
 
         game.getBatch().draw(player.getCurrentFrame(), player.getX(), player.getY(), player.getWidth(), player.getHeight() * player.getyScale());
 
@@ -165,10 +182,12 @@ public class GameWorld implements Screen {
         game.getBatch().end();
 
         //The shapesRender doesn't work when drawn within the batch.
-        //We also need it drawn over the background so stop the batch.
+        //We also need it drawn over the background, player, enemies
+        //and weight so stop the batch.
         gui.drawGui();  //Draw the gui.
         //Now that the gui had been drawn, begin the batch again to
-        //draw everything else over on top of it.
+        //draw everything else over on top of it like
+        //the buttons, fonts, etc.
 
         game.getBatch().begin();
 
@@ -261,8 +280,13 @@ public class GameWorld implements Screen {
     private void removeDestroyed(){
         for ( int i = 0; i < enemies.size(); i++ ){
             if ( enemies.get(i).isDestroyed() ){
-                pQueue.addToQueue(5);
                 enemies.remove(i);
+            }
+        }
+
+        for ( int i = 0; i < rays.size(); i++ ){
+            if ( rays.get(i).isDestroyed() ){
+                rays.remove(i);
             }
         }
     }
