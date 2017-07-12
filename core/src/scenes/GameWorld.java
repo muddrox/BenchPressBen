@@ -2,6 +2,9 @@ package scenes;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Screen;
+import com.badlogic.gdx.assets.AssetManager;
+import com.badlogic.gdx.audio.Music;
+import com.badlogic.gdx.audio.Sound;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.OrthographicCamera;
@@ -27,6 +30,8 @@ import static helpers.GameInfo.WIDTH;
 public class GameWorld implements Screen {
 
     private GameMain game;
+    private AssetManager soundManager;
+    private Music music;
     private float timePassed = 0;
     private Player player;
     private Texture background;
@@ -46,8 +51,13 @@ public class GameWorld implements Screen {
 
     private Loser loser;
 
-    public GameWorld(GameMain game) {
+    public GameWorld(GameMain game, AssetManager soundManager) {
         this.game = game;
+        this.soundManager = soundManager;
+
+        music = soundManager.get("audio/music/snd_bensound_main.mp3", Music.class);
+        music.setLooping(true);
+        music.play();
 
         player  = new Player("spr_player.atlas", this, 360, 160);
         weight  = new Weight("spr_weight.png", this, 360, 640);
@@ -103,6 +113,9 @@ public class GameWorld implements Screen {
                 enemy.updateMotion();
 
                 if ( enemy.contact(weight) && !weight.isHeld() ){
+                    long s_explode = soundManager.get("audio/sounds/snd_hit.wav", Sound.class).play();
+                    soundManager.get("audio/sounds/snd_hit.wav", Sound.class).setPitch(s_explode, random(1f, 2f));
+
                     weight.setHsp( ( weight.getX() - enemy.getX() ) * 0.2f );
                     weight.setVsp(15);
                     enemy.destroy();
@@ -116,6 +129,7 @@ public class GameWorld implements Screen {
         } else {
 
             if ( !resetGameAlarm.isRunning() ){
+                soundManager.get("audio/sounds/snd_fail.wav", Sound.class).play();
                 resetGameAlarm.startAlarm();
             }
 
@@ -129,6 +143,7 @@ public class GameWorld implements Screen {
 
         if ( weight.contact(player) && !weight.isHeld() && weight.getVsp() < 0 ){
             weight.setxOffset((int) (( weight.getX() + weight.getWidth()/2 ) - ( player.getX() + player.getWidth()/2 )));
+            soundManager.get("audio/sounds/snd_catch.wav", Sound.class).play();
             gui.setFlicker(Color.PURPLE, 5);
             weight.setHeld(true);
         }
@@ -194,6 +209,7 @@ public class GameWorld implements Screen {
      * @return
      */
     public float getTimePassed() { return timePassed; }
+    public AssetManager getSoundManager() { return soundManager; }
     public Player getPlayer() { return player; }
     public Weight getWeight() { return weight; }
     public GUI getGUI() { return gui; }
@@ -229,6 +245,7 @@ public class GameWorld implements Screen {
 
     @Override
     public void dispose() {
+        soundManager.dispose();
         background.dispose();
         buttons.dispose();
         game.dispose();
