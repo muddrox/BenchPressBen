@@ -17,6 +17,7 @@ import effects.EffectExplode;
 import effects.EffectRays;
 import enemy.Enemy;
 import gui.GUI;
+import gui.Marker;
 import gui.PointsQueue;
 import gui.Score;
 import helpers.Alarm;
@@ -45,6 +46,7 @@ public class GameWorld implements Screen {
     private ArrayList<Enemy> enemies;
     private ArrayList<EffectRays> rays;
     private ArrayList<EffectExplode> explosions;
+    private Marker weightMarker;
     private GUI gui;
 
     private float minTime;
@@ -67,7 +69,8 @@ public class GameWorld implements Screen {
         weight  = new Weight("spr_weight.png", this, 360, 640);
         enemies = new ArrayList<Enemy>();
         rays = new ArrayList<EffectRays>();
-        explosions  = new ArrayList<EffectExplode>(); //new EffectExplode("spr_explode.atlas", this, 360, 640);
+        explosions  = new ArrayList<EffectExplode>();
+        weightMarker = new Marker(this, weight.getX() + weight.getWidth()/2, HEIGHT - 200);
 
         background = new Texture("bg_main.png");
         buttons = new Texture("bg_buttons.png");
@@ -97,7 +100,8 @@ public class GameWorld implements Screen {
         Gdx.gl.glClearColor(1, .75f, 1, 1);
         Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
 
-        if( weight.getY() <= 160 ){ // game over!
+        if( weight.getY() <= 160 && atGym == true ){ // game over!
+            rays.add(new EffectRays(this, weight.getX() + weight.getWidth()/2, weight.getY() + weight.getHeight()/2, 640, 6, 10));
             setAtGym(false);
         }
 
@@ -130,8 +134,9 @@ public class GameWorld implements Screen {
                     enemy.destroy();
                 }
 
-                if ( enemy.getY() < 160 - enemy.getHeight() ) {
-                    enemy.destroy();
+                if ( enemy.getY() < 160 && atGym == true ) {
+                    rays.add(new EffectRays(this, enemy.getX() + enemy.getWidth()/2, enemy.getY() + enemy.getHeight()/2, 640, 6, 10));
+                    setAtGym(false);
                 }
             }
 
@@ -145,8 +150,6 @@ public class GameWorld implements Screen {
             if ( !resetGameAlarm.isRunning() ){
                 soundManager.get("audio/sounds/snd_fail.wav", Sound.class).play();
                 resetGameAlarm.startAlarm();
-
-                rays.add(new EffectRays(this, weight.getX() + weight.getWidth()/2, weight.getY() + weight.getHeight()/2, 640, 6, 10));
             }
 
             resetGameAlarm.updateAlarm(Gdx.graphics.getDeltaTime());
@@ -201,6 +204,13 @@ public class GameWorld implements Screen {
         //Now that the gui had been drawn, begin the batch again to
         //draw everything else over on top of it like
         //the buttons, fonts, etc.
+
+        //This marker will keep track of the weight for the player
+        //even when it flys off screen.
+        if ( weight.getY() > HEIGHT - 120 ){
+            weightMarker.setMarkerX(weight.getX() + weight.getWidth()/2);
+            weightMarker.drawMarker();
+        }
 
         game.getBatch().begin();
 
