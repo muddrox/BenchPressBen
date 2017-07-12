@@ -1,6 +1,7 @@
 package player;
 
 import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.audio.Sound;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.Sprite;
@@ -100,6 +101,7 @@ public class Weight extends Sprite  {
             }
         } else {
             if ( gameWorld.getPlayer().getyScale() != 1 ){
+                gameWorld.getSoundManager().get("audio/sounds/snd_throw.wav", Sound.class).play();
                 gameWorld.getPlayer().setyScale(1f);
 
                 setVsp(24);
@@ -154,6 +156,8 @@ public class Weight extends Sprite  {
      */
     private void move(){
         if ( x < 40 || x > WIDTH - 40 - getWidth() ) {
+            gameWorld.getSoundManager().get("audio/sounds/snd_bounce.wav", Sound.class).play();
+
             gameWorld.getGUI().setBorderColor( new Color(random(255f)/255f, random(255f)/255f, random(255f)/255f, 1) );
             gameWorld.getGUI().setFlicker(Color.YELLOW, 1);
             gameWorld.getGUI().setFrameEffect(20);

@@ -2,6 +2,9 @@ package com.benchpressben.game;
 
 import com.badlogic.gdx.Game;
 import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.assets.AssetManager;
+import com.badlogic.gdx.audio.Music;
+import com.badlogic.gdx.audio.Sound;
 import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 
@@ -16,6 +19,8 @@ public class GameMain extends Game {
 
 	private OrthographicCamera cam;
 
+	private AssetManager soundManager;
+
 	@Override
 	public void create () {
 
@@ -25,7 +30,17 @@ public class GameMain extends Game {
 		cam.update();
 
 		batch = new SpriteBatch();
-		setScreen(new GameWorld(this));
+		soundManager = new AssetManager();
+
+		soundManager.load("audio/music/snd_bensound_main.mp3", Music.class);
+		soundManager.load("audio/sounds/snd_bounce.wav", Sound.class);
+		soundManager.load("audio/sounds/snd_throw.wav", Sound.class);
+		soundManager.load("audio/sounds/snd_catch.wav", Sound.class);
+		soundManager.load("audio/sounds/snd_fail.wav", Sound.class);
+		soundManager.load("audio/sounds/snd_hit.wav", Sound.class);
+		soundManager.finishLoading();
+
+		setScreen(new GameWorld(this, soundManager));
 	}
 
 	@Override
@@ -37,7 +52,9 @@ public class GameMain extends Game {
 
 	@Override
 	public void dispose () {
+		super.dispose();
 		batch.dispose();
+		soundManager.dispose();
 	}
 
 	/*************************************************
