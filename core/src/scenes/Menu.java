@@ -18,15 +18,20 @@ public class Menu implements Screen{
     private GameMain game;
     private AssetManager soundManager;
     private Texture bg;
+    private int touchX;
+    private int touchY;
 
     public Menu(GameMain game, AssetManager soundManager){
         this.soundManager = soundManager;
         this.game = game;
         bg = new Texture("Main Screen Bench Press Ben.png");
-        // perhpas in the future we could change what music is played on the main menu
+
         Music music = this.soundManager.get("audio/music/snd_bensound_main.mp3", Music.class);
         music.setLooping(true);
         music.play();
+        
+        touchY = 0;
+        touchX = 0;
     }
 
     @Override
@@ -39,8 +44,8 @@ public class Menu implements Screen{
         Gdx.gl.glClearColor(1, .75f, 1, 1);
         Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
 
-        int touchX = Gdx.input.getX();
-        int touchY = Gdx.input.getY();
+        touchX = Gdx.input.getX();
+        touchY = Gdx.input.getY();
 
         game.getBatch().begin();
         game.getBatch().draw(bg, 0, 0);
