@@ -1,12 +1,17 @@
 package scenes;
 
 import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.Preferences;
 import com.badlogic.gdx.Screen;
 import com.badlogic.gdx.assets.AssetManager;
 import com.badlogic.gdx.audio.Music;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.Texture;
 import com.benchpressben.game.GameMain;
+
+import gui.Score;
+
+import static java.sql.Types.NULL;
 
 
 /**
@@ -20,6 +25,8 @@ public class Menu implements Screen{
     private Texture bg;
     private int touchX;
     private int touchY;
+    private Score score;
+
 
     public Menu(GameMain game, AssetManager soundManager){
         this.soundManager = soundManager;
@@ -32,7 +39,9 @@ public class Menu implements Screen{
         
         touchY = 0;
         touchX = 0;
-    }
+
+        score = new Score();
+}
 
     @Override
     public void show() {
@@ -51,6 +60,9 @@ public class Menu implements Screen{
 
         game.getBatch().begin();
         game.getBatch().draw(bg, 0, 0);
+        if (score.getHighScore() != NULL) {
+            score.getHighFont().draw(game.getBatch(), score.getHighString(), 150, 840);
+        }
         game.getBatch().end();
 
         if ( isTouched == 1 ) {
