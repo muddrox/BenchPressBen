@@ -53,10 +53,10 @@ public class Score {
     /*************************************************
      * Standard getters
      *************************************************/
-    public int getScore()            { return score; }
+    public Integer getScore()            { return score; }
     public String getScoreString()   { return scoreString; }
     public BitmapFont getScoreFont() { return scoreFont; }
-    public int getHighScore()        { return highScore; }
+    public Integer getHighScore()        { return highScore; }
     public String getHighString()    { return highString; }
     public BitmapFont getHighFont()  { return highFont; }
 
