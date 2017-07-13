@@ -1,6 +1,7 @@
 package scenes;
 
 import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.Preferences;
 import com.badlogic.gdx.Screen;
 import com.badlogic.gdx.assets.AssetManager;
 import com.badlogic.gdx.audio.Music;
@@ -48,7 +49,7 @@ public class GameWorld implements Screen {
     private ArrayList<EffectExplode> explosions;
     private Marker weightMarker;
     private GUI gui;
-
+    private Preferences prefs;
     private float minTime;
     private float maxTime;
 
@@ -78,6 +79,8 @@ public class GameWorld implements Screen {
         buttons = new Texture("bg_buttons.png");
         atGym   = true;
 
+        prefs = Gdx.app.getPreferences("The high score");
+
         gui = new GUI(this);
         loser = new Loser();
         score = new Score();
@@ -103,7 +106,7 @@ public class GameWorld implements Screen {
         Gdx.gl.glClearColor(1, .75f, 1, 1);
         Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
 
-        if( weight.getY() <= 160 && atGym == true ){ // game over!
+        if( weight.getY() <= 160 && getAtGym() ){ // game over!
             rays.add(new EffectRays(this, weight.getX() + weight.getWidth()/2, weight.getY() + weight.getHeight()/2, 640, 6, 10));
             setAtGym(false);
         }
@@ -152,7 +155,7 @@ public class GameWorld implements Screen {
                     enemy.destroy();
                 }
 
-                if ( enemy.getY() < 160 && atGym == true ) {
+                if ( enemy.getY() < 160 && getAtGym()) {
                     rays.add(new EffectRays(this, enemy.getX() + enemy.getWidth()/2, enemy.getY() + enemy.getHeight()/2, 640, 6, 10));
                     setAtGym(false);
                 }
@@ -164,6 +167,13 @@ public class GameWorld implements Screen {
             }
 
         } else {
+
+            // if statement will write new highscore to shared prefs
+            if (score.getScore() > score.getHighScore()){
+                prefs.putInteger("highscore", score.getScore());
+                prefs.flush();
+                Gdx.app.debug("highscore", "highscore: " + score.getHighScore());
+            }
 
             if ( !resetGameAlarm.isRunning() ){
                 soundManager.get("audio/sounds/snd_fail.wav", Sound.class).play();
@@ -234,6 +244,7 @@ public class GameWorld implements Screen {
 
         game.getBatch().draw(buttons, 0, 0);
 
+        score.getScoreFont().getData().setScale(1.5f, 1.5f);
         score.getScoreFont().draw(game.getBatch(), score.getScoreString(), 100, 1240); //batch, string, x, y
 
         if ( !getAtGym() ) {
