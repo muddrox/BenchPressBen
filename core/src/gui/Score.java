@@ -1,6 +1,7 @@
 package gui;
 
 import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.Preferences;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
 
 
@@ -14,9 +15,14 @@ import com.badlogic.gdx.graphics.g2d.BitmapFont;
  */
 public class Score {
 
-    private int score;
+    private Integer score;
+    private Integer highScore;
     private String scoreString;
+    private String highString;
     private BitmapFont scoreFont;
+    private BitmapFont highFont;
+
+    private Preferences prefs;
 
     /**
      * The Constructor. It initializes the score (int), scoreString (String), creates an instance
@@ -25,11 +31,18 @@ public class Score {
      */
     public Score() {
 
+        // read in highscore
+        prefs = Gdx.app.getPreferences("The high score");
+        highScore = prefs.getInteger("highscore");
+        System.out.println("highscore: " + highScore);
+
         score = 0;
         scoreString = "Score: 0";
+        highString = "High Score: " + highScore;
 
         scoreFont = new BitmapFont(Gdx.files.internal("destinie_48.fnt"));
-        scoreFont.getData().setScale(1.5f, 1.5f); //float scale x, float scale y
+        highFont = scoreFont;
+
     }
 
     public void updateScore (int points) {
@@ -40,7 +53,18 @@ public class Score {
     /*************************************************
      * Standard getters
      *************************************************/
-    public int getScore() { return score; }
-    public String getScoreString() { return scoreString; }
+    public int getScore()            { return score; }
+    public String getScoreString()   { return scoreString; }
     public BitmapFont getScoreFont() { return scoreFont; }
+    public int getHighScore()        { return highScore; }
+    public String getHighString()    { return highString; }
+    public BitmapFont getHighFont()  { return highFont; }
+
+    /**
+     * highScore setter
+     * @param highScore
+     */
+    public void setHighScore(int highScore) {
+        this.highScore = highScore;
+    }
 }
